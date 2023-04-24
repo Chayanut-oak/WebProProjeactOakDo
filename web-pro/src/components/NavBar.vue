@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full">
 
     <Disclosure as="nav" class="bg-neutral-900  p-3" v-slot="{ open }">
       <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
@@ -201,11 +201,12 @@ export default {
       this.active = !this.active;
     },
     goCheckout() {
-      console.log(this.cart)
+      
       axios
-      .post("http://localhost:3000/checkout", { params: { book: this.cart, user: this.$store.state.id } })
-      .then((response) => {
-        
+      .get("http://localhost:3000/checkout", { params: { book: this.newcart, user: this.$store.state.id } })
+      .then((response) => {    
+        this.newcart = ""
+        console.log(response.data)
       })
       .catch((error) => {
         alert(error.response.data)

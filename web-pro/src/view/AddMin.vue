@@ -26,7 +26,7 @@
                     <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
                         role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                         <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
-                            <button @click="cusModal = false, order_line = false" class="float-right m-auto"> <svg
+                            <button @click="cusModal = false ,order_line = null" class="float-right m-auto"> <svg
                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="30" height="30"
                                     id="close">
                                     <path fill="#F94646"
@@ -93,7 +93,7 @@
 
                             <div v-if="order_line" class=" max-w mx-auto my-5 px-5 tbl-fixed drop-shadow-md">
 
-                                <table  class="table-auto border-spacing-px min-w-max ">
+                                <table class="table-auto border-spacing-px min-w-max ">
                                     <thead>
                                         <tr class="sticky top-0">
                                             <th
@@ -470,7 +470,7 @@ export default {
                 })
                 .then((response) => {
                     this.orderdetail = response.data.orderline
-                    this.order_line = true
+                    this.order_line = response.data.orderline
                 })
                 .catch((error) => {
                     alert(error.response.data)

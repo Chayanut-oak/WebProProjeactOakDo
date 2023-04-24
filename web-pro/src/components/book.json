@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "name": "มุมมองนักอ่านพระเจ้า เล่ม 7",
+        "href": "/Product",
+        "imageSrc": "    https://cdn.discordapp.com/attachments/959359393776959553/1080179282082537513/9786161850883L.png",
+        "imageAlt": "omniscient reader's viewpoint",
+        "genre": "Action Fantasy Mystery Drama",
+        "quantity": "1"
+    },
+    {
+        "id": 2,
+        "name": "อัศวินอุตุกับปีศาจทั้งแปด",
+        "href": "/Product",
+        "imageSrc": "https://cdn.discordapp.com/attachments/959359393776959553/1080512012758569070/9786169258223L.png",
+        "imageAlt": "อัศวินอุตุกับปีศาจทั้งแปด",
+        "genre": "Philosophy",
+        "quantity":"1"
+    },
+    {
+        "id": 3,
+        "name": "สมองเศรษฐี",
+        "href": "/Product",
+        "imageSrc": "https://cdn.discordapp.com/attachments/959359393776959553/1080512436710408233/9786161808976L.png",
+        "imageAlt": "สมองเศรษฐี",
+        "genre": "Philosophy",
+        "quantity":"1"
+    },
+    {
+        "id": 4,
+        "name": "The Witcher Blood of Elves",
+        "href": "/Product",
+        "imageSrc": "https://images-se-ed.com/ws/Storage/Originals/978616/184/9786161840754L.jpg?h=82a69e4b2fcc877571385f31d0860400",
+        "imageAlt": "The Witcher สายเลือดแห่งเอลฟ์",
+        "genre": "Novel",
+        "quantity":"1"
+    },
+    {
+        "id": 5,
+        "name": "ภาษาพาที เล่ม6",
+        "href": "#",
+        "imageSrc": "https://online.fliphtml5.com/bgvue/wzej/files/large/1.jpg?1636786856",
+        "imageAlt": "ภาษาพาที เล่ม6",
+        "genre": "Thai",
+        "quantity":"1"
+    },
+    {
+        "id": 6,
+        "name": "วรรณคดีไทย เล่ม2",
+        "href": "#",
+        "imageSrc": "https://s3gw.inet.co.th:8082/smegp-image-1/prod/V1/15082021120451%E0%B8%A7%E0%B8%A3%E0%B8%A3%E0%B8%93%E0%B8%84%E0%B8%94%E0%B8%B5%E0%B8%A7%E0%B8%B4%E0%B8%88%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B9%8C.jpg",
+        "imageAlt": "วรรณคดีไทย เล่ม2",
+        "genre": "Novel",
+        "quantity":"1"
+    },
+    {
+        "id": 7,
+        "name": "ดรุณศึกษา ชั้นประถม",
+        "href": "#",
+        "imageSrc": "http://1.bp.blogspot.com/-w9Up9vGmsXo/UDtM7qoIq2I/AAAAAAAAAJE/k9w7uN30SyA/s1600/1302-5.jpg",
+        "imageAlt": "ดรุณศึกษา ชั้นประถม",
+        "genre": "Novel",
+        "quantity":"1"
+    },
+    {
+        "id": 8,
+        "name": "ภาษาญี่ปุ่น อะกิโกะโตะโทะโมะดะจิ 1",
+        "href": "#",
+        "imageSrc": "https://images-se-ed.com/ws/Storage/Originals/978974/443/9789744436955L.jpg?h=299928798c76aaf1065796ed4296fb83",
+        "imageAlt": "日本語　あきこと友だち　１",
+        "genre": "Novel",
+        "quantity":"1"
+    }
+]

@@ -1,0 +1,162 @@
+DROP TABLE IF EXISTS `Publisher`;
+CREATE TABLE `Publisher` (
+  `publisher_id` CHAR(4),
+  `publisher_name` VARCHAR(100),
+  PRIMARY KEY (`publisher_id`),
+  KEY `NN` (`publisher_name`)
+);
+DROP TABLE IF EXISTS `Admin`;
+CREATE TABLE `Admin` (
+  `admin_id` VARCHAR(15),
+  `admin_password` VARCHAR(100),
+  `admin_fname` VARCHAR(100),
+  `admin_lname` VARCHAR(100),
+  `admin_phone` CHAR(10),
+  `admin_email` VARCHAR(100),
+  PRIMARY KEY (`admin_id`),
+  KEY `NN` (`admin_password`, `admin_fname`, `admin_lname`, `admin_phone`, `admin_email`)
+);
+DROP TABLE IF EXISTS `Customer`;
+CREATE TABLE `Customer` (
+  `customer_id` int AUTO_INCREMENT,
+  `password` VARCHAR(100),
+  `fname` VARCHAR(100),
+  `lname` VARCHAR(100),
+  `email` VARCHAR(100),
+  `phone_num` CHAR(10),
+  `address` VARCHAR(100),
+ `customer_img` VARCHAR(100),
+  `start_membership` DATE,
+  PRIMARY KEY (`customer_id`),
+  KEY `NN` (`password`, `fname`, `lname`, `email`, `phone_num`, `address`, `start_membership`)
+);
+DROP TABLE IF EXISTS `Book_order`;
+CREATE TABLE `Book_order` (
+  `order_id` VARCHAR(6),
+  `customer_id` int,
+  `date_of_borrow` DATE,
+  `end_of_date` DATE,
+  PRIMARY KEY (`order_id`),
+  FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`),
+  KEY `NN` (`date_of_borrow`, `end_of_date`)
+);
+
+DROP TABLE IF EXISTS `Author`;
+CREATE TABLE `Author` (
+  `author_id` int(3),
+  `author_name` VARCHAR(100),
+  `author_alias` VARCHAR(100),
+  PRIMARY KEY (`author_id`),
+  KEY `NN` (`author_name`),
+  KEY `UNIQUE` (`author_alias`)
+);
+
+DROP TABLE IF EXISTS `Books`;
+CREATE TABLE `Books` (
+    `isbn` VARCHAR(13),
+  `book_name` VARCHAR(100),
+  `book_img` VARCHAR(100),
+  `book_desc` VARCHAR(100),
+  `publishered_date` DATE,
+  `publisher_id` CHAR(4),
+  `book_stock` INT,
+  PRIMARY KEY (`isbn`),
+  KEY `NN` (`book_name`, `book_desc`, `book_stock`)
+);
+DROP TABLE IF EXISTS `Book_order_line`;
+CREATE TABLE `Book_order_line` (
+  `order_line_id` INT,
+  `order_id` VARCHAR(6),
+   `isbn` VARCHAR(13),
+  `status` ENUM('Borrowed', 'Returned'),
+  PRIMARY KEY (`order_line_id`),
+  FOREIGN KEY (`order_id`) REFERENCES `Book_order`(`order_id`),
+  FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`),
+  KEY `NN` (`status`)
+);
+CREATE TABLE `Type` (
+  `Type_id` CHAR(3),
+  `book_type` VARCHAR(100),
+  PRIMARY KEY (`Type_id`),
+  KEY `UNIQUE` (`book_type`)
+);
+CREATE TABLE `Book_type` (
+  `isbn` VARCHAR(13),
+  `Type_id`CHAR(3),
+  FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`),
+  FOREIGN KEY (`Type_id`) REFERENCES `Type`(`Type_id`)
+);
+
+CREATE TABLE `Book_Author` (
+  `isbn` VARCHAR(13),
+  `author_id` int(3),
+  FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`),
+FOREIGN KEY (`author_id`) REFERENCES `Author`(`author_id`)
+);
+CREATE TABLE `Book_possession` (
+  `customer_id` int,
+  `isbn` VARCHAR(13),
+  FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`),
+  FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`)
+);
+
+INSERT INTO `Publisher` (`publisher_id`, `publisher_name`) 
+VALUES 
+('P001', 'HarperCollins'),
+('P002', 'Penguin Random House'),
+('P003', 'Simon & Schuster');
+
+INSERT INTO `Admin` (`admin_id`, `admin_password`, `admin_fname`, `admin_lname`, `admin_phone`, `admin_email`) 
+VALUES 
+('A001', 'password123', 'John', 'Doe', '1234567890', 'john.doe@example.com'),
+('A002', 'secret123', 'Jane', 'Doe', '0987654321', 'jane.doe@example.com');
+
+INSERT INTO `Customer` (`customer_id`, `password`, `fname`, `lname`, `email`, `phone_num`, `address`, `start_membership`) 
+VALUES 
+('C001', 'securepassword', 'Bob', 'Smith', 'bob.smith@example.com', '1234567890', '123 Main St, Anytown, USA', '2024-06-30'),
+('C002', 'strongpassword', 'Alice', 'Johnson', 'alice.johnson@example.com', '0987654321', '456 High St, Anytown, USA', '2023-12-31');
+
+INSERT INTO `Author` (`author_id`, `author_name`, `author_alias`) 
+VALUES 
+(1, 'J.K. Rowling', 'Robert Galbraith'),
+(2, 'Stephen King', NULL),
+(3, 'Haruki Murakami', NULL);
+
+INSERT INTO `Books` (`isbn`, `book_name`, `book_img`, `book_desc`, `publishered_date`, `publisher_id`, `book_stock`) 
+VALUES 
+('9780439554930', 'Harry Potter and the Philosopher\'s Stone', 'https://example.com/harry-potter-1.jpg', 'The first book in the Harry Potter series.', '1997-06-26', 'P001', 10),
+('9780307743662', '11/22/63', 'https://example.com/112263.jpg', 'A time-travel novel about the assassination of John F. Kennedy.', '2011-11-08', 'P002', 5),
+('9780099549031', 'Norwegian Wood', 'https://example.com/norwegian-wood.jpg', 'A novel about a college student in Tokyo in the 1960s.', '1987-08-29', 'P003', 3);
+
+
+INSERT INTO `Book_Author` (`isbn`, `author_id`) 
+VALUES 
+('9780439554930', 1),
+('9780307743662', 2),
+('9780099549031', 3);
+
+INSERT INTO `Type` (`Type_id`, `book_type`)
+VALUES
+    ('FIC', 'Fiction'),
+    ('NFN', 'Non-Fiction'),
+    ('KID', 'Children');
+
+INSERT INTO `Book_type` (`isbn`, `Type_id`) 
+VALUES 
+('9780439554930', 'FIC'),
+('9780307743662', 'FIC'),
+('9780099549031', 'FIC');
+
+SELECT b.book_name , bo.date_of_borrow, bo.end_of_date, b.book_img, c.customer_id, c.fname, c.lname, c.email, c.phone_num, bp.isbn 
+FROM Customer c 
+JOIN Book_possession bp 
+ON c.customer_id = bp.customer_id 
+JOIN Books b 
+on bp.isbn = b.isbn 
+JOIN Book_order bo 
+on c.customer_id = bo.customer_id 
+JOIN Book_order_line bol 
+on bol.order_id= bo.order_id 
+where c.customer_id = 2 
+group by b.book_name;
+

@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
 
-    <Disclosure as="nav" class="bg-neutral-900  p-3" v-slot="{ open }">
+    <Disclosure as="nav" class="bg-neutral-900 p-1.5" v-slot="{ open }">
       <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between">
           <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -97,7 +97,7 @@
             <Menu as="div" class="relative ml-3">
               <div>
                 <MenuButton
-                  class="flex rounded-full hover:border-4 hover:border-orange-500  text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 ml-5">
+                  class="flex rounded-full hover:border-orange-500  text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 ml-5">
                   <img class="h-9 w-9 rounded-full"
                     :src="pro ? `http://localhost:3000/${pro}` : 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'"
                     alt="Profile Image" />

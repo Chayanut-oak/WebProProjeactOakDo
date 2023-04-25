@@ -1,10 +1,10 @@
 
 <template>
   <div class="bg-white">
-    <div class="mx-auto max-w-2xl py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+    <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <h2 class="sr-only">Products</h2>
       <form class="">
-        <div class="relative p-8 mb-auto mt-5">
+        <div class="relative p-8 mb-auto">
           <div class="absolute inset-y-0 left-0 flex items-center pl-3 mb-13.5 pointer-events-none">
             <svg aria-hidden="true" class="w-100 h-5 pr-2 text-gray-800" fill="none" stroke="currentColor"
               viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -38,29 +38,30 @@
         </div>
       </div>
     </div>
-    <div class="my-4 mx-4">
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div class="container">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
-    <div class="transition ease-in-out hover:-translate-y-1 hover:scale-105 margin-right 4s book-card bg-neutral-900 shadow-md rounded-md overflow-hidden flex flex-col justify-between " v-for="product in NewS" :key="product.isbn">
-      <router-link :to="{ name: 'Products', params: { id: product.isbn } }" class="underline">
-      <img class="w-full" :src="`http://localhost:3000/${product.book_img}`"  :alt="book.title">
-    </router-link>
-      <div class="p-4 flex-1">
-        <h3 class="text-white text-lg font-semibold mb-2">{{ product.book_name }}</h3>
-        <p class="text-white">{{ book.author }}</p>
-        <p class="text-white">ประเภท: {{ product.book_type }}</p>
-      </div>
-      <div class="mt-4 flex justify-end">
-        <button v-if="product.book_stock != 0" @click="addToCart(product)" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded w-full">
-          เลือก
-        </button>
+        <div
+          class="transition ease-in-out hover:-translate-y-1 hover:scale-105 margin-right 4s book-card bg-neutral-900 shadow-md rounded-md overflow-hidden flex flex-col justify-between "
+          v-for="product in NewS" :key="product.isbn">
+          <router-link :to="{ name: 'Products', params: { id: product.isbn } }" class="underline">
+            <img class="w-full" :src="`http://localhost:3000/${product.book_img}`" :alt="book.title">
+          </router-link>
+          <div class="p-4 flex-1">
+            <h3 class="text-white text-lg font-semibold mb-2">{{ product.book_name }}</h3>
+            <p class="text-white">{{ book.author }}</p>
+            <p class="text-white">ประเภท: {{ product.book_type }}</p>
+          </div>
+          <div class="mt-4 flex justify-end">
+            <button v-if="product.book_stock != 0" @click="addToCart(product)"
+              class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded w-full">
+              เลือก
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-  </div>
-  
-
 </template>
 <script setup>
 const genre = [
@@ -106,16 +107,16 @@ export default {
       this.picked = "";
     },
     addToCart(products) {
-      axios.get(`http://localhost:3000/checkcart/`, { params: { user: this.$store.state.id,bookisbn: products.isbn } })
-            .then((response) => {
-              this.add(products)
-              console.log(response)
-            })
-            .catch((err) => {
-                alert(err.response.data)
-                console.log(err);
-            });
-     
+      axios.get(`http://localhost:3000/checkcart/`, { params: { user: this.$store.state.id, bookisbn: products.isbn } })
+        .then((response) => {
+          this.add(products)
+          console.log(response)
+        })
+        .catch((err) => {
+          alert(err.response.data)
+          console.log(err);
+        });
+
     },
   }, created() {
     axios

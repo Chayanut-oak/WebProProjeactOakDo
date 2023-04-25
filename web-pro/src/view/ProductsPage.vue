@@ -3,13 +3,16 @@
     <div>
         <div class="object-fill">
             <NavBar :cart = "cart" :clearCart = "clearCart" :logout = "logout" />
-            <section class="text-gray-700 body-font overflow-hidden bg-white px-5 py-5">
-                <div class="container px-0 py-0 mx-2">
-                    <div class="lg:w-4/5 mx-auto flex flex-wrap">
-                        <img alt="ecommerce"
-                            class="lg:w-1/2 w-full object-cover object-center rounded border border-gray-200"
+            <section class="text-gray-700 body-font overflow-hidden bg-white">
+                <div class="container my-5 mx-auto">
+                    <div class="lg:w-4/5 mx-auto flex flex-wrap justify-center">
+                        <div class="basic1/2">
+                            <img alt="ecommerce"
+                            class="w-96 object-cover object-center rounded border border-gray-200"
                             :src="`http://localhost:3000/${book.book_img}`">
-                        <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
+                        </div>
+                        <div class="lg:basis-1/2">
+                            <div class="w-full lg:pl-10 py-6 mt-6 lg:mt-0">
                             <h2 class="text-sm title-font text-gray-500 tracking-widest">Auther: {{ book.author_name }}</h2>
                             <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">{{ book.book_name }}</h1>
                             <div class="flex mb-4 text-sm title-font text-gray-500 tracking-widest">
@@ -30,6 +33,7 @@
                                     </svg>
                                 </button>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>

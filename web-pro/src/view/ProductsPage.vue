@@ -2,7 +2,7 @@
 <template>
     <div>
         <div class="object-fill">
-            <NavBar :cart = "cart" :clearCart = "clearCart" />
+            <NavBar :cart = "cart" :clearCart = "clearCart" :logout = "logout" />
             <section class="text-gray-700 body-font overflow-hidden bg-white px-5 py-5">
                 <div class="container px-0 py-0 mx-2">
                     <div class="lg:w-4/5 mx-auto flex flex-wrap">
@@ -112,7 +112,12 @@ export default {
             cart: []
         };
     },
-    methods: {
+    methods: {logout() {
+      this.$store.commit('logout')
+      this.$router.push({ path: "/" });
+      this.pro = null
+      this.cart = []
+    },
         addToCart(products) {
             const exitproduct = this.cart.find(cartproduct => cartproduct.isbn === products.isbn)
             if (exitproduct) {
@@ -136,6 +141,14 @@ export default {
             })
             .catch((err) => {
                 this.error = err
+                console.log(err);
+            });
+            axios
+            .get("http://localhost:3000/checkbook", { params: { user: this.$store.state.id } })
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((err) => {
                 console.log(err);
             });
     }

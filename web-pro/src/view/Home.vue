@@ -1,12 +1,13 @@
 <template>
   <div class="d">
-    <NavBar :cart = "cart" :clearCart = "clearCart" />
+    <NavBar :cart = "cart" :clearCart = "clearCart" :logout = "logout" />
     <CarouselBar />
     <ProductsList :add= "addToCart" />
   </div>
 </template>
   
   <script>
+  import axios from 'axios';
 import CarouselBar from "../components/CarouselBar";
 import NavBar from "../components/NavBar.vue";
 import ProductsList from "../components/ProductsList.vue";
@@ -23,8 +24,13 @@ export default {
     return {
       cart:[]
     };
-  },methods:{
-    addToCart(products) {87
+  },methods:{logout() {
+      this.$store.commit('logout')
+      this.$router.push({ path: "/" });
+      this.pro = null
+      this.cart = []
+    },
+    addToCart(products) {
        const exitproduct = this.cart.find(cartproduct => cartproduct.isbn === products.isbn)
        if(exitproduct){
         alert('This book is already in your cart.')
@@ -48,6 +54,15 @@ export default {
     } else {
       this.cart = JSON.parse(localStorage.cart);
     }
+    axios
+            .get("http://localhost:3000/checkbook", { params: { user: this.$store.state.id } })
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    
   },
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div class="bg-gray-100 w-full h-full">
-        <NavBar :cart="cart" :clearCart="clearCart" />
+        <NavBar :cart = "cart" :clearCart = "clearCart" :logout = "logout" />
         <div class="bg-gray-100 w-full h-full">
             <div class="container mx-auto my-5 p-5">
                 <div class="md:flex no-wrap md:-mx-2 ">
@@ -13,8 +13,9 @@
                                 <input v-if="editform" class="file-input hidden" type="file" id="file-input" ref="file"
                                     @change="handleFileUpload()" />
                                 <label for="file-input">
-                                    <img class="h-50 w-50 mx-auto rounded-full" 
-                                    :src="customer_info[0].customer_img ? `http://localhost:3000/${customer_info[0].customer_img}`:'https://bulma.io/images/placeholders/640x360.png'" alt="">
+                                    <img class="h-50 w-50 mx-auto rounded-full"
+                                        :src="customer_info[0].customer_img ? `http://localhost:3000/${customer_info[0].customer_img}` : 'https://bulma.io/images/placeholders/640x360.png'"
+                                        alt="">
                                 </label>
                             </div>
                             <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">{{ customer_info[0].fname }}
@@ -39,7 +40,7 @@
                         <!-- About Section -->
 
                         <div class="bg-white p-3 shadow-sm rounded-sm">
-                            <form >
+                            <form>
                                 <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
                                     <span clas="text-green-500">
                                         <svg class="h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -124,11 +125,11 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="item in customer_info" :key="item.isbn"
+                                    <tr v-for="item in book_possess" :key="item.isbn"
                                         class="bg-white border-b dark:bg-gray-300">
                                         <td v-if="item.book_img" class="px-6 py-4">
-                                            <img class="object-contain h-20 w-30" :src="`http://localhost:3000/${item.book_img}`"
-                                                alt="Placeholder image" />
+                                            <img class="object-contain h-20 w-30"
+                                                :src="`http://localhost:3000/${item.book_img}`" alt="Placeholder image" />
                                         </td>
                                         <td v-if="item.book_name" class="px-6 py-4">
                                             {{ item.book_name }}
@@ -137,11 +138,13 @@
                                             {{ item.end_of_date.slice(0, 10) }}
                                         </td>
 
-                                        <td  v-if="item.book_name" class="px-6 py-4 text-right">
-                                            <button href="#" class="text-xl font-medium mx-10 my-1 btn btn-secondary">Read</button>
-                                            <button href="#" class="text-xl font-medium mx-10 my-1 btn btn-secondary">Return</button>
+                                        <td v-if="item.book_name" class="px-6 py-4 text-right">
+                                            <button href="#"
+                                                class="text-xl font-medium mx-10 my-1 btn btn-secondary">Read</button>
+                                            <button href="#" class="text-xl font-medium mx-10 my-1 btn btn-secondary"
+                                                @click='returnBook(item)'>Return</button>
                                         </td>
-                                       
+
                                     </tr>
                                 </tbody>
                             </table>
@@ -181,9 +184,15 @@ export default {
             email: this.$store.state.email,
             customer_info: null,
             file: null,
-            
+            book_possess : null
+
         };
-    }, methods: {
+    }, methods: {logout() {
+      this.$store.commit('logout')
+      this.$router.push({ path: "/" });
+      this.pro = null
+      this.cart = []
+    },
 
         addToCart(products) {
             this.cart.push(products)
@@ -196,6 +205,21 @@ export default {
         }, handleFileUpload() {
             this.file = this.$refs.file.files[0];
             console.log(this.file)
+        },
+        returnBook(item) {
+            axios.put('http://localhost:3000/returnBook', {
+                params: {
+                    isbn: item.isbn,
+                    userId: this.$store.state.id
+                }
+            }).then((response) => {
+                this.book_possess = response.data.result
+                console.log(response)
+
+            })
+                .catch((error) => {
+                    alert(error.response.data)
+                });
         },
         submit() {
             var formData = new FormData();
@@ -214,13 +238,13 @@ export default {
                 .then((response) => {
                     this.$router.push({ path: "/UserProfile" }); // Success! -> redirect to home page
                     console.log(response)
-                    
-                    if(this.newemail == ""){
-                        this.$store.commit('login',this.email)
-                    }else{
-                        this.$store.commit('login',this.newemail)
+
+                    if (this.newemail == "") {
+                        this.$store.commit('login', this.email)
+                    } else {
+                        this.$store.commit('login', this.newemail)
                     }
-                    
+
                 })
                 .catch((error) => {
                     alert(error.response.data)
@@ -239,11 +263,21 @@ export default {
             .get("http://localhost:3000/User", { params: { email: this.email } })
             .then((response) => {
                 this.customer_info = response.data.customer_info;
+                this.book_possess = response.data.possession
                 console.log(this.customer_info);
             })
             .catch((err) => {
                 console.log(err);
             });
+        axios
+            .get("http://localhost:3000/checkbook/", { params: { user: this.$store.state.id } })
+            .then((response) => {
+                console.log(response.data);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
     }
 };
 </script>

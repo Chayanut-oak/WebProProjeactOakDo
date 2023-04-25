@@ -36,7 +36,7 @@
                                 <thead class="border-b">
                                   <tr>
                                     <th>
-                                      <span class="icon mx-10 my-1 btn btn-dark" key="false" @click="clearCart()">
+                                      <span class="icon mx-10 my-1 btn btn-dark" key="false" @click="clearCart(),this.newcart = '' ">
                                         Clear
                                       </span>
                                     </th>
@@ -47,7 +47,7 @@
                                 </thead>
 
                                 <tbody>
-                                  <tr v-for="item in newcart" :key="item.isbn">
+                                  <tr v-for="item in cart" :key="item.isbn">
                                     <td class="px-4 py-2">
                                       <img class="object-contain h-20 w-30"
                                         :src="`http://localhost:3000/${item.book_img}`" alt="Placeholder image" />
@@ -185,6 +185,7 @@ export default {
   props: {
     cart: Array,
     clearCart: Function,
+    logout:Function
   },
   name: "ProductList",
   components: {},
@@ -201,23 +202,18 @@ export default {
       this.active = !this.active;
     },
     goCheckout() {
-      
       axios
       .get("http://localhost:3000/checkout", { params: { book: this.newcart, user: this.$store.state.id } })
       .then((response) => {    
         this.newcart = ""
+        localStorage.removeItem("cart")
         console.log(response.data)
       })
       .catch((error) => {
         alert(error.response.data)
       });
     },
-    logout() {
-      this.$store.commit('logout')
-      this.$router.push({ path: "/" });
-      this.pro = null
-      this.newcart = null
-    }
+    
   },
   computed: {
     userType() {
@@ -227,7 +223,7 @@ export default {
       let newcart = this.cart
     }
   }, created() {
-
+    
     axios
       .get("http://localhost:3000/propic", { params: { mail: this.$store.state.email, } })
       .then((response) => {

@@ -51,7 +51,7 @@
         <p class="text-white">ประเภท: {{ product.book_type }}</p>
       </div>
       <div class="mt-4 flex justify-end">
-        <button @click="addToCart(product)" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded w-full">
+        <button v-if="product.book_stock != 0" @click="addToCart(product)" class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded w-full">
           เลือก
         </button>
       </div>
@@ -67,6 +67,14 @@ const genre = [
   { name: "Children", href: "#", current: false, value: "Children" },
   { name: "Non-Fiction", href: "#", current: false, value: "Non-Fiction" },
   { name: "Fiction", href: "#", current: false, value: "Fiction" },
+  { name: "Art", href: "#", current: false, value: "Art" },
+  { name: "Biography", href: "#", current: false, value: "Biography" },
+  { name: "Business", href: "#", current: false, value: "Business" },
+  { name: "History", href: "#", current: false, value: "History" },
+  { name: "Medicine", href: "#", current: false, value: "Medicine" },
+  { name: "Science", href: "#", current: false, value: "Science" },
+  { name: "Sports", href: "#", current: false, value: "Sports" },
+  { name: "Travel", href: "#", current: false, value: "Travel" },
 ];
 </script>
 <script>
@@ -98,8 +106,16 @@ export default {
       this.picked = "";
     },
     addToCart(products) {
-      this.add(products)
-      console.log(this.cart)
+      axios.get(`http://localhost:3000/checkcart/`, { params: { user: this.$store.state.id,bookisbn: products.isbn } })
+            .then((response) => {
+              this.add(products)
+              console.log(response)
+            })
+            .catch((err) => {
+                alert(err.response.data)
+                console.log(err);
+            });
+     
     },
   }, created() {
     axios

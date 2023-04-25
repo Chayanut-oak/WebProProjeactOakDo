@@ -396,7 +396,7 @@ VALUES
     (
         '9780141033570',
         '1984',
-        '\uploads\819ijTWp9JL.jpg',
+        '\\uploads\\819ijTWp9JL.jpg',
         'A dystopian social science fiction novel by English novelist George Orwell',
         '1949-06-08',
         1,
@@ -405,7 +405,7 @@ VALUES
     (
         '9780061120084',
         'To Kill a Mockingbird',
-        '\uploads\To_Kill_a_Mockingbird_(first_edition_cover).jpg',
+        '\\uploads\\To_Kill_a_Mockingbird_(first_edition_cover).jpg',
         'A novel by Harper Lee',
         '1960-07-11',
         2,
@@ -414,7 +414,7 @@ VALUES
     (
         '9780345391803',
         'The Hitchhiker\'s Guide to the Galaxy',
-        '\uploads\81XSN3hA5gL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\81XSN3hA5gL._AC_UF1000,1000_QL80_.jpg',
         'A comic science fiction series created by Douglas Adams',
         '1979-10-12',
         3,
@@ -423,7 +423,7 @@ VALUES
     (
         '9780670026193',
         'The Goldfinch',
-        '\uploads\71fyVKrv5NL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\71fyVKrv5NL._AC_UF1000,1000_QL80_.jpg',
         'A novel by Donna Tartt',
         '2013-10-22',
         4,
@@ -432,7 +432,7 @@ VALUES
     (
         '9780316015844',
         'The Hunger Games',
-        '\uploads\The_Hunger_Games_cover.jpg',
+        '\\uploads\\The_Hunger_Games_cover.jpg',
         'A dystopian novel by the American writer Suzanne Collins',
         '2008-09-14',
         5,
@@ -441,7 +441,7 @@ VALUES
     (
         '9780316067928',
         'Twilight',
-        '\uploads\615ZIxEDozL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\615ZIxEDozL._AC_UF1000,1000_QL80_.jpg',
         'A series of four vampire-themed fantasy romance novels by American author Stephenie Meyer',
         '2005-10-05',
         6,
@@ -450,7 +450,7 @@ VALUES
     (
         '9780747532743',
         'Harry Potter and the Philosopher\'s Stone',
-        '\uploads\9781408855652.jfif',
+        '\\uploads\\9781408855652.jfif',
         'A novel by British author J.K. Rowling',
         '1997-06-26',
         7,
@@ -459,7 +459,7 @@ VALUES
     (
         '9780439655484',
         'The Da Vinci Code',
-        '\uploads\91Q5dCjc2KL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\91Q5dCjc2KL._AC_UF1000,1000_QL80_.jpg',
         'A mystery thriller novel by Dan Brown',
         '2003-03-18',
         8,
@@ -468,7 +468,7 @@ VALUES
     (
         '9780321751041',
         'University Physics with Modern Physics',
-        '\uploads\81JNB5TQaIL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\81JNB5TQaIL._AC_UF1000,1000_QL80_.jpg',
         'A textbook for a two-year introductory algebra-based physics course',
         '2012-05-24',
         9,
@@ -477,7 +477,7 @@ VALUES
     (
         '9780199540483',
         'The Oxford Dictionary of English',
-        '\uploads\81JNB5TQaIL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\81JNB5TQaIL._AC_UF1000,1000_QL80_.jpg',
         'A dictionary published by Oxford University Press',
         '1998-08-06',
         10,
@@ -562,47 +562,9 @@ insert into
     ('9780670026193', 'FIC'),
     ('9780747532743', 'FIC');
 
-INSERT INTO
-    `Book_order` (`customer_id`, `date_of_borrow`, `end_of_date`)
-VALUES
-    (1, '2023-04-16', '2023-05-16'),
-    (2, '2023-04-17', '2023-05-17'),
-    (3, '2023-04-18', '2023-05-18'),
-    (4, '2023-04-19', '2023-05-19'),
-    (5, '2023-04-20', '2023-05-20'),
-    (6, '2023-04-21', '2023-05-21'),
-    (7, '2023-04-22', '2023-05-22'),
-    (8, '2023-04-23', '2023-05-23'),
-    (9, '2023-04-24', '2023-05-24'),
-    (10, '2023-04-25', '2023-05-25');
 
-INSERT INTO
-    `Book_order_line` (`order_line_id`, `order_id`, `isbn`, `status`)
-VALUES
-    (1, 1, '9780061122415', 'Borrowed'),
-    (2, 1, '9780345538376', 'Borrowed'),
-    (3, 1, '9780553382563', 'Returned'),
-    (4, 2, '9780061122415', 'Returned'),
-    (5, 2, '9780345538376', 'Borrowed'),
-    (6, 2, '9780553382563', 'Borrowed'),
-    (7, 3, '9780345538376', 'Borrowed'),
-    (8, 3, '9780553382563', 'Returned'),
-    (9, 4, '9780061122415', 'Borrowed'),
-    (10, 4, '9780553382563', 'Borrowed');
 
-INSERT INTO
-    `Book_possession` (`customer_id`, `isbn`)
-VALUES
-    (1, '9780061120084'),
-    (2, '9780061120084'),
-    (3, '9780061120084'),
-    (4, '9780061120084'),
-    (5, '9780061120084'),
-    (6, '9780061120084'),
-    (7, '9780061120084'),
-    (8, '9780061120084'),
-    (9, '9780061120084'),
-    (10, '9780061120084');
+
 
 INSERT INTO Comments (isbn, customer_id, comment, created_when) VALUES
 ('9780061122415', 2, 'This book was amazing! Highly recommend it.', '2023-04-14 10:30:00'),

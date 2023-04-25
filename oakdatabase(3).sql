@@ -25,7 +25,7 @@
 DROP TABLE IF EXISTS `Admin`;
 
 CREATE TABLE `Admin` (
-    `admin_id` INT(11) AUTO_INCREMENT,
+    `admin_id` VARCHAR(15),
     `admin_password` VARCHAR(100),
     `admin_fname` VARCHAR(100),
     `admin_lname` VARCHAR(100),
@@ -108,7 +108,6 @@ CREATE TABLE `Books` (
     `publisher_id` INT,
     `book_stock` INT,
     PRIMARY KEY (`isbn`),
-    FOREIGN KEY (`publisher_id`) REFERENCES `Publisher`(`publisher_id` ) on delete cascade on update cascade,
     KEY `NN` (`book_name`, `book_desc`, `book_stock`)
 );
 
@@ -149,7 +148,6 @@ DROP TABLE IF EXISTS `Book_Author`;
 CREATE TABLE `Book_Author` (
     `isbn` VARCHAR(13),
     `author_id` int(3),
-    primary key(`isbn`,`author_id`),
     FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`) on delete cascade on update cascade,
     FOREIGN KEY (`author_id`) REFERENCES `Author`(`author_id`) on delete cascade on update cascade
 );
@@ -157,9 +155,11 @@ CREATE TABLE `Book_Author` (
 DROP TABLE IF EXISTS `Book_possession`;
 
 CREATE TABLE `Book_possession` (
+	`bp_id` int(11) AUTO_INCREMENT,
+
     `customer_id` int(11),
     `isbn` VARCHAR(13),
-    PRIMARY KEY( `isbn`, `customer_id`),
+    primary key (`bp_id`),
     FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`) on delete cascade on update cascade,
     FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`) on delete cascade on update cascade
 );
@@ -293,7 +293,7 @@ VALUES
 
 INSERT INTO
     `Admin` (
-        
+        `admin_id`,
         `admin_password`,
         `admin_fname`,
         `admin_lname`,
@@ -302,7 +302,7 @@ INSERT INTO
     )
 VALUES
     (
-        
+        'AD001',
         'pass123',
         'John',
         'Doe',
@@ -310,7 +310,7 @@ VALUES
         'johndoe@example.com'
     ),
     (
-
+        'AD002',
         'pass456',
         'Jane',
         'Doe',
@@ -318,7 +318,7 @@ VALUES
         'janedoe@example.com'
     ),
     (
-     
+        'AD003',
         'pass789',
         'Michael',
         'Smith',
@@ -326,7 +326,7 @@ VALUES
         'michaelsmith@example.com'
     ),
     (
-    
+        'AD004',
         'passabc',
         'Emily',
         'Davis',
@@ -334,7 +334,7 @@ VALUES
         'emilydavis@example.com'
     ),
     (
-   
+        'AD005',
         'passdef',
         'David',
         'Wilson',
@@ -342,7 +342,7 @@ VALUES
         'davidwilson@example.com'
     ),
     (
-     
+        'AD006',
         'passghi',
         'Susan',
         'Garcia',
@@ -350,7 +350,7 @@ VALUES
         'susangarcia@example.com'
     ),
     (
-
+        'AD007',
         'passjkl',
         'Daniel',
         'Brown',
@@ -358,7 +358,7 @@ VALUES
         'danielbrown@example.com'
     ),
     (
-     
+        'AD008',
         'passmno',
         'Laura',
         'Jones',
@@ -366,7 +366,7 @@ VALUES
         'laurajones@example.com'
     ),
     (
-    
+        'AD009',
         'passpqr',
         'Brian',
         'Taylor',
@@ -374,7 +374,7 @@ VALUES
         'briantaylor@example.com'
     ),
     (
-     
+        'AD010',
         'passstu',
         'Jessica',
         'Clark',
@@ -396,7 +396,7 @@ VALUES
     (
         '9780141033570',
         '1984',
-        '/uploads/819ijTWp9JL.jpg',
+        '\\uploads\\819ijTWp9JL.jpg',
         'A dystopian social science fiction novel by English novelist George Orwell',
         '1949-06-08',
         1,
@@ -405,7 +405,7 @@ VALUES
     (
         '9780061120084',
         'To Kill a Mockingbird',
-        '/uploads/To_Kill_a_Mockingbird_(first_edition_cover).jpg',
+        '\\uploads\\To_Kill_a_Mockingbird_(first_edition_cover).jpg',
         'A novel by Harper Lee',
         '1960-07-11',
         2,
@@ -414,7 +414,7 @@ VALUES
     (
         '9780345391803',
         'The Hitchhiker\'s Guide to the Galaxy',
-        '/uploads/81XSN3hA5gL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\81XSN3hA5gL._AC_UF1000,1000_QL80_.jpg',
         'A comic science fiction series created by Douglas Adams',
         '1979-10-12',
         3,
@@ -423,7 +423,7 @@ VALUES
     (
         '9780670026193',
         'The Goldfinch',
-        '/uploads/71fyVKrv5NL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\71fyVKrv5NL._AC_UF1000,1000_QL80_.jpg',
         'A novel by Donna Tartt',
         '2013-10-22',
         4,
@@ -432,7 +432,7 @@ VALUES
     (
         '9780316015844',
         'The Hunger Games',
-        '/uploads/The_Hunger_Games_cover.jpg',
+        '\\uploads\\The_Hunger_Games_cover.jpg',
         'A dystopian novel by the American writer Suzanne Collins',
         '2008-09-14',
         5,
@@ -441,7 +441,7 @@ VALUES
     (
         '9780316067928',
         'Twilight',
-        '/uploads/615ZIxEDozL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\615ZIxEDozL._AC_UF1000,1000_QL80_.jpg',
         'A series of four vampire-themed fantasy romance novels by American author Stephenie Meyer',
         '2005-10-05',
         6,
@@ -450,7 +450,7 @@ VALUES
     (
         '9780747532743',
         'Harry Potter and the Philosopher\'s Stone',
-        '/uploads/book_img-1681635695182.jfif',
+        '\\uploads\\9781408855652.jfif',
         'A novel by British author J.K. Rowling',
         '1997-06-26',
         7,
@@ -459,7 +459,7 @@ VALUES
     (
         '9780439655484',
         'The Da Vinci Code',
-        '/uploads/91Q5dCjc2KL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\91Q5dCjc2KL._AC_UF1000,1000_QL80_.jpg',
         'A mystery thriller novel by Dan Brown',
         '2003-03-18',
         8,
@@ -468,7 +468,7 @@ VALUES
     (
         '9780321751041',
         'University Physics with Modern Physics',
-        '/uploads/81JNB5TQaIL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\81JNB5TQaIL._AC_UF1000,1000_QL80_.jpg',
         'A textbook for a two-year introductory algebra-based physics course',
         '2012-05-24',
         9,
@@ -477,7 +477,7 @@ VALUES
     (
         '9780199540483',
         'The Oxford Dictionary of English',
-        '/uploads/81JNB5TQaIL._AC_UF1000,1000_QL80_.jpg',
+        '\\uploads\\81JNB5TQaIL._AC_UF1000,1000_QL80_.jpg',
         'A dictionary published by Oxford University Press',
         '1998-08-06',
         10,
@@ -543,7 +543,7 @@ VALUES
     ('NON', 'Non-fiction'),
     ('BIO', 'Biography'),
     ('HIS', 'History'),
-    ('SCI', 'Science'),
+    ('SCN', 'Science'),
     ('ART', 'Art'),
     ('TRV', 'Travel'),
     ('SPT', 'Sports'),
@@ -562,61 +562,21 @@ insert into
     ('9780670026193', 'FIC'),
     ('9780747532743', 'FIC');
 
-INSERT INTO
-    `Book_order` (`customer_id`, `date_of_borrow`, `end_of_date`)
-VALUES
-    (1, '2023-04-16', '2023-05-16'),-- 1
-    (2, '2023-04-17', '2023-05-17'),-- 2
-    (3, '2023-04-18', '2023-05-18'),-- 3
-    (4, '2023-04-19', '2023-05-19'),-- 4
-    (5, '2023-04-20', '2023-05-20'),-- 5
-    (6, '2023-04-21', '2023-05-21'),-- 6
-    (7, '2023-04-22', '2023-05-22'),-- 7
-    (8, '2023-04-23', '2023-05-23'),-- 8
-    (9, '2023-04-24', '2023-05-24'),-- 9
-    (10, '2023-04-25', '2023-05-25');-- 10
 
-INSERT INTO
-    `Book_order_line` (`order_line_id`, `order_id`, `isbn`, `status`)
-VALUES
-    (1, 1, '9780141033570', 'Borrowed'),
-    (2, 1, '9780199540483', 'Borrowed'),
-    (3, 2, '9780316015844', 'Returned'),
-    (4, 2, '9780316067928', 'Returned'),
-    (5, 3, '9780321751041', 'Borrowed'),
-    (6, 4, '9780439655484', 'Borrowed'),
-    (7, 5, '9780439655484', 'Borrowed'),
-    (8, 6, '9780321751041', 'Returned'),
-    (9, 7, '9780199540483', 'Borrowed'),
-    (10, 8, '9780141033570', 'Borrowed'),
-    (11, 9, '9780321751041', 'Borrowed'),
-    (12, 10, '9780439655484', 'Borrowed'),
-    (13, 10, '9780316067928', 'Borrowed');
-INSERT INTO
-    `Book_possession` (`customer_id`, `isbn`)
-VALUES
-    (1, '9780141033570'),
-    (1, '9780199540483'),
-    (3, '9780321751041'),
-    (4, '9780439655484'),
-    (5, '9780439655484'),
-    (7, '9780199540483'),
-    (8, '9780141033570'),
-    (9, '9780321751041'),
-    (10, '9780439655484'),
-    (10, '9780316067928');
+
+
 
 INSERT INTO Comments (isbn, customer_id, comment, created_when) VALUES
-('9780141033570', 2, 'This book was amazing! Highly recommend it.', '2023-04-14 10:30:00'),
-('9780141033570', 3, 'I found the plot confusing and hard to follow.', '2023-04-15 11:45:00'),
-('9780141033570', 4, 'Loved the characters and the writing style.', '2023-04-15 13:20:00'),
-('9780141033570', 2, 'One of the best books I have ever read!', '2023-04-12 09:15:00'),
-('9780199540483', 5, 'The story was interesting, but the pacing was too slow for me.', '2023-04-13 14:55:00'),
-('9780199540483', 6, 'This book made me cry. So beautiful and moving.', '2023-04-13 18:00:00'),
-('9780199540483', 4, 'Great book! Could not put it down.', '2023-04-11 16:30:00'),
-('9780199540483', 7, 'I thought this book was just okay. Nothing special.', '2023-04-12 13:10:00'),
-('9780199540483', 8, 'The ending was a bit predictable, but still enjoyable overall.', '2023-04-13 11:20:00'),
-('9780199540483', 2, 'Not my favorite book, but still worth a read.', '2023-04-10 12:00:00');
+('9780061122415', 2, 'This book was amazing! Highly recommend it.', '2023-04-14 10:30:00'),
+('9780061122415', 3, 'I found the plot confusing and hard to follow.', '2023-04-15 11:45:00'),
+('9780061122415', 4, 'Loved the characters and the writing style.', '2023-04-15 13:20:00'),
+('9780061122415', 2, 'One of the best books I have ever read!', '2023-04-12 09:15:00'),
+('9780553382563', 5, 'The story was interesting, but the pacing was too slow for me.', '2023-04-13 14:55:00'),
+('9780553382563', 6, 'This book made me cry. So beautiful and moving.', '2023-04-13 18:00:00'),
+('9780553382563', 4, 'Great book! Could not put it down.', '2023-04-11 16:30:00'),
+('9780061122415', 7, 'I thought this book was just okay. Nothing special.', '2023-04-12 13:10:00'),
+('9780061122415', 8, 'The ending was a bit predictable, but still enjoyable overall.', '2023-04-13 11:20:00'),
+('9780061122415', 2, 'Not my favorite book, but still worth a read.', '2023-04-10 12:00:00');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */
 ;

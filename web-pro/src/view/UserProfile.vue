@@ -7,13 +7,16 @@
                     <!-- Left Side -->
                     <div class="w-full md:w-3/12 md:mx-2">
                         <!-- Profile Card -->
-                        <div class="bg-white p-3 border-t-4 border-gray-700  ">
+                        <div class="bg-white p-3 grid justify-center border-t-4 border-gray-700">
                             <div class="image overflow-hidden ">
 
                                 <input v-if="editform" class="file-input hidden" type="file" id="file-input" ref="file"
                                     @change="handleFileUpload()" />
                                 <label for="file-input">
-                                    <img class="h-50 w-50 mx-auto rounded-full"
+                                    <img v-if="editform" class="rounded-full mt-5 w-52 h-52 lg:w-52 lg:h-52 ml-2  hover:ring-4 hover:ring-orange-300 ease-in-out duration-200"
+                                        :src="customer_info[0].customer_img ? `http://localhost:3000/${customer_info[0].customer_img}` : 'https://bulma.io/images/placeholders/640x360.png'"
+                                        alt="">
+                                    <img v-else class="rounded-full mt-5 w-52 h-52 lg:w-52 lg:h-52 ml-2"
                                         :src="customer_info[0].customer_img ? `http://localhost:3000/${customer_info[0].customer_img}` : 'https://bulma.io/images/placeholders/640x360.png'"
                                         alt="">
                                 </label>
@@ -54,32 +57,32 @@
 
                                 <div class="text-gray-700">
                                     <div class="flex">
-                                        <div class="px-4 py-2 font-semibold">Customer ID:</div>
-                                        <div class="px-4 py-2">{{ customer_info[0].customer_id }}</div>
+                                        <div class="px-2 py-2 font-semibold">Customer ID:</div>
+                                        <div class="px-2 py-2">{{ customer_info[0].customer_id }}</div>
                                     </div>
                                     <div class="grid md:grid-cols-2 text-l">
 
-                                        <div class="flex">
-                                            <div class="px-4 py-2 font-semibold">First Name:</div>
-                                            <div class="px-4 py-2">{{ customer_info[0].fname }}</div>
+                                        <div class="grid grid-cols-2">
+                                            <div class="py-2 font-semibold">First Name:</div>
+                                            <div class="">{{ customer_info[0].fname }}</div>
                                             <input v-model="fname" v-show="editform" type="text" name="fname"
                                                 placeholder="New first name">
                                         </div>
-                                        <div class="flex">
-                                            <div class="px-4 py-2 font-semibold">Last Name:</div>
-                                            <div class="px-4 py-2">{{ customer_info[0].lname }}</div>
+                                        <div class="grid grid-cols-2">
+                                            <div class="py-2 font-semibold">Last Name:</div>
+                                            <div class="">{{ customer_info[0].lname }}</div>
                                             <input v-model="lname" v-show="editform" type="text" name="lname"
                                                 placeholder="New last name">
                                         </div>
-                                        <div class="flex">
-                                            <div class="px-4 py-2 font-semibold">Contact No:</div>
-                                            <div class="px-4 py-2">{{ customer_info[0].phone_num }}</div>
+                                        <div class="grid grid-cols-2">
+                                            <div class="py-2 font-semibold">Contact No:</div>
+                                            <div class="">{{ customer_info[0].phone_num }}</div>
                                             <input v-model="numphone" v-show="editform" type="text" name="numphone"
                                                 placeholder="New phone number">
                                         </div>
-                                        <div class="flex">
-                                            <div class="px-4 py-2 font-semibold">Email:</div>
-                                            <div class="px-4 py-2">
+                                        <div class="grid grid-cols-2">
+                                            <div class="py-2 font-semibold">Email:</div>
+                                            <div class="py-2">
                                                 {{ customer_info[0].email }}
                                             </div>
                                             <input v-model="newemail" v-show="editform" type="text" name="email"

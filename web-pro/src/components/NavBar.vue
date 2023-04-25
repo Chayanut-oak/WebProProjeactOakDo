@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
 
-    <Disclosure as="nav" class="bg-neutral-900 p-1.5" v-slot="{ open }">
+    <Disclosure as="nav" class="bg-neutral-900" v-slot="{ open }">
       <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div class="relative flex h-16 items-center justify-between">
           <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -80,8 +80,8 @@
                 <a v-for="item in navigation" :key="item.name" :href="item.href" :class="[
                   item.current
                     ? 'bg-gray-900 text-white '
-                    : 'bg-neutral-700 drop-shadow-md hover:bg-orange-500 text-white',
-                  ' px-3 py-10 text-sm font-medium',
+                    : 'bg-orange-500 drop-shadow-md hover:bg-orange-600 text-white',
+                  ' px-3 py-4 text-sm font-medium ease-in-out duration-200 ',
                 ]" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</a>
 
               </div>
@@ -89,19 +89,20 @@
           </div>
           <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
             <Button @click="Open = true"
-              class="flex rounded-full bg-neutral-700 drop-shadow-md hover:bg-orange-500 text-white p-5'">
-              <ShoppingBagIcon class="h-6 w-8 rounded-full text-white" src="" alt="" />
+              class="flex h-7 w-7 rounded-full  hover:ring-2 hover:ring-orange-300 ease-in-out duration-200 text-white">
+              <ShoppingBagIcon class="rounded-full text-white" src="" alt="" />
             </Button>
 
             <!-- Profile dropdown -->
             <Menu as="div" class="relative ml-3">
               <div>
-                <MenuButton
+                <MenuButton v-if="$store.state.email"
                   class="flex rounded-full hover:border-orange-500  text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 ml-5">
-                  <img class="h-9 w-9 rounded-full"
+                  <img class="h-9 w-9 rounded-full  hover:ring-4 hover:ring-orange-300 ease-in-out duration-200"
                     :src="pro ? `http://localhost:3000/${pro}` : 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'"
                     alt="Profile Image" />
                 </MenuButton>
+                <RouterLink v-else class="text-white" to="/SignIn">login</RouterLink>
               </div>
               <transition enter-active-class="transition ease-out duration-100"
                 enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100"
@@ -146,8 +147,8 @@
           <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :href="item.href" :class="[
             item.current
               ? 'bg-gray-900 text-white'
-              : 'bg-neutral-700 drop-shadow-md hover:bg-orange-500 text-white',
-            'block rounded-md px-3 py-2 font-medium text-center',
+              : 'bg-orange-500 drop-shadow-md hover:bg-orange-700 text-white',
+            'block rounded-md px-3 py-4 font-medium text-center',
           ]" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</DisclosureButton>
         </div>
       </DisclosurePanel>
@@ -205,8 +206,9 @@ export default {
       axios
       .get("http://localhost:3000/checkout", { params: { book: this.newcart, user: this.$store.state.id } })
       .then((response) => {    
-        this.newcart = ""
+        alert("success")
         localStorage.removeItem("cart")
+        this.$router.push("/userprofile")
         console.log(response.data)
       })
       .catch((error) => {

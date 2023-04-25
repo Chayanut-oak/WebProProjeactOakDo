@@ -4,9 +4,9 @@
     <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <h2 class="sr-only">Products</h2>
       <form class="">
-        <div class="relative p-8 mb-auto">
-          <div class="absolute inset-y-0 left-0 flex items-center pl-3 mb-13.5 pointer-events-none">
-            <svg aria-hidden="true" class="w-100 h-5 pr-2 text-gray-800" fill="none" stroke="currentColor"
+        <div class="relative mt-5">
+          <div class="absolute inset-y-0 left-0 flex items-center ml-16  mb-13.5 pointer-events-none ">
+            <svg v-if="!look" aria-hidden="true" class="w-100 h-5 pr-2 text-white" fill="none" stroke="currentColor"
               viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -20,13 +20,8 @@
       </form>
 
       <div class="d">
-        <button @click="toggle" class="btn btn-dark">Genres</button>
-        <div v-if="active">
-          <div class="card mt-2">
+          <div class="card my-5">
             <div class="card-content px-2 py-2 grid grid-cols-5">
-              <div class="All">
-                <button @click="unCheck">All</button>
-              </div>
               <div class="" v-for="item in genre" :key="item.id">
                 <div class="Novel">
                   <input type="radio" id="one" name="type" :value="item.value" v-model="picked" />
@@ -35,7 +30,6 @@
               </div>
             </div>
           </div>
-        </div>
       </div>
     </div>
     <div class="container">
@@ -55,7 +49,7 @@
           <div class="mt-4 flex justify-end">
             <button v-if="product.book_stock != 0" @click="addToCart(product)"
               class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded w-full">
-              เลือก
+              ADD TO CART
             </button>
           </div>
         </div>
@@ -65,6 +59,7 @@
 </template>
 <script setup>
 const genre = [
+  { name: "ALL", href: "#", current: true, value: "" },
   { name: "Children", href: "#", current: false, value: "Children" },
   { name: "Non-Fiction", href: "#", current: false, value: "Non-Fiction" },
   { name: "Fiction", href: "#", current: false, value: "Fiction" },
@@ -135,7 +130,11 @@ export default {
       if (this.look != "") {
         return booklits.filter((x) => (x.book_name.toLowerCase()).includes((this.look).toLowerCase()));
       }
-      if (this.picked != "") {
+      if (this.picked == "ALL") {
+        // console.log(type.filter(x=>x.genre.includes(this.picked)  ))
+        return this.book;
+      } 
+      else if (this.picked != "") {
         // console.log(type.filter(x=>x.genre.includes(this.picked)  ))
         return booklits.filter((x) => x.book_type.includes(this.picked));
       } else {

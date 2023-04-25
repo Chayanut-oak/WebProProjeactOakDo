@@ -97,6 +97,15 @@ export default {
       this.cart = []
     },
         addToCart(products) {
+            axios.get(`http://localhost:3000/checkcart/`, { params: { user: this.$store.state.id, bookisbn: products.isbn } })
+        .then((response) => {
+          this.add(products)
+          console.log(response)
+        })
+        .catch((err) => {
+          alert(err.response.data)
+          console.log(err);
+        });
             const exitproduct = this.cart.find(cartproduct => cartproduct.isbn === products.isbn)
             if (exitproduct) {
                 alert('This book is already in your cart.')

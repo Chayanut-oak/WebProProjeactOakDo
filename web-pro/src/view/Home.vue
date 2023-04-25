@@ -38,10 +38,20 @@ export default {
         alert("You must log in first.")
        }
        else{
-        this.cart.push(products)
+        axios.get(`http://localhost:3000/checkcart/`, { params: { user: this.$store.state.id, bookisbn: products.isbn } })
+        .then((response) => {
+          this.cart.push(products)
+            localStorage.setItem("cart", JSON.stringify(this.cart));
+          console.log(response)
+        })
+        .catch((err) => {
+          alert(err.response.data)
+          console.log(err);
+        });
+        
        }
       
-      localStorage.setItem("cart", JSON.stringify(this.cart));
+    
     },
     clearCart() {
       this.cart = []

@@ -47,7 +47,7 @@
             <p class="text-white">ประเภท: {{ product.book_type }}</p>
           </div>
           <div class="mt-4 flex justify-end">
-            <button v-if="product.book_stock != 0" @click="addToCart(product)"
+            <button v-if="product.book_stock != 0" @click="add(product)"
               class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded w-full">
               ADD TO CART
             </button>
@@ -101,18 +101,7 @@ export default {
     unCheck() {
       this.picked = "";
     },
-    addToCart(products) {
-      axios.get(`http://localhost:3000/checkcart/`, { params: { user: this.$store.state.id, bookisbn: products.isbn } })
-        .then((response) => {
-          this.add(products)
-          console.log(response)
-        })
-        .catch((err) => {
-          alert(err.response.data)
-          console.log(err);
-        });
-
-    },
+    
   }, created() {
     axios
       .get("http://localhost:3000/")

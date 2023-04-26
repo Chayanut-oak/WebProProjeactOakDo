@@ -158,6 +158,7 @@
 </template>
 
 <script setup>
+import swal from 'sweetalert2';
 import { ref } from "vue";
 import {
   Disclosure,
@@ -206,10 +207,19 @@ export default {
       axios
       .get("http://localhost:3000/checkout", { params: { book: this.newcart, user: this.$store.state.id } })
       .then((response) => {    
-        alert("success")
-        localStorage.removeItem("cart")
+        swal.fire({
+             title: 'You have borrow these book.',
+              text:'',
+              icon:'success'
+          }).then((next)=>{
+            if(next){
+              
+              localStorage.removeItem("cart")
         this.$router.push("/userprofile")
-        console.log(response.data)
+             
+            }
+          })
+        
       })
       .catch((error) => {
         alert(error.response.data)

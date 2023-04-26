@@ -200,7 +200,10 @@ router.get("/book", async function (req, res, next) {
     let cus = await pool.query(
       "SELECT c.customer_id, c.fname, c.lname, c.email, c.start_membership FROM Customer c;"
     )
-      res.send({book:book[0],customerH:user[0],customer:cus[0]})
+    let author = await pool.query(
+      "SELECT * FROM Author;"
+    )
+      res.send({book:book[0],customerH:user[0],customer:cus[0],author:author[0]})
       console.log(user[0])
   } catch (error) {
     next(error)

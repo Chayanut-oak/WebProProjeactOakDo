@@ -155,7 +155,7 @@
                     <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
                         role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                         <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
-                            <button @click="showModal = false" class="float-right m-auto"> <svg
+                            <button @click="showModal = false, active = false" class="float-right m-auto"> <svg
                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="30" height="30"
                                     id="close">
                                     <path fill="#F94646"
@@ -183,8 +183,10 @@
                                     v-model="book_name" required><br>
 
                                 <label for="author">Author Name:</label>
-                                <input type="text" class="border border-grey-light w-full  rounded mb-4" id="book_name"
-                                    v-model="author" required><br>
+                                <select v-model="author" >
+                                    <option selected value="None">None</option>
+                                    <option  v-for="item in authors" :key="item.author_id" :value="item.author_name">{{item.author_name}}</option>
+                                </select><br>
 
 
                                 <label for="alias">Author alias:</label>
@@ -212,7 +214,15 @@
                                     <option selected value="None">None</option>
                                     <option value="Fiction">Fiction</option>
                                     <option value="Non-Fiction">Non-Fiction</option>
-                                    <option value="Children">Children</option>
+                                    <option value="Art">Art</option>
+                                    <option value="Biography">Biography</option>
+                                    <option value="Business">Business</option>
+                                    <option value="History">History</option>
+                                    <option value="Medicine">Medicine</option>
+                                    <option value="Science">Science</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Travel">Travel</option>
+                                    
                                 </select>
                                 <div class="flex">
                                     <label for="book_img">Book_Image: </label>
@@ -224,7 +234,7 @@
                                     new book</button>
 
                             </form>
-                            <button v-show="active" @click="update(), showModal = false"
+                            <button v-show="active" @click="update(), showModal = false, active = false"
                                 class="w-full inline-flex items-center justify-center px-4 py-2 bg-black border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Update
                                 book</button>
                         </div>
@@ -243,7 +253,7 @@
 
                     <button
                         class=" inline-flex items-center justify-center px-4 py-2 bg-neutral-700 drop-shadow-md hover:bg-orange-500 text-white rounded-md"
-                        @click="showModal = true">Add Book</button>
+                        @click="showModal = true, add()">Add Book</button>
 
                 </div>
 
@@ -443,7 +453,7 @@ export default {
             published_date: null,
             book_stock: null,
             file: null,
-            author: null,
+            author: "None",
             alias: null,
             publisher_name: null,
             type: "None",
@@ -458,9 +468,22 @@ export default {
             order_id: null,
             order_line: false,
             cusModal: false,
+            authors:null
         };
     },
-    methods: {
+    methods: {add(){
+        this.oldfile = null
+            this.oldisbn = null
+            this.isbn = null
+            this.book_name = null
+            this.author = "None"
+            this.alias = null
+            this.book_desc = null
+            this.published_date = null
+            this.publisher_name = null
+            this.book_stock = null
+            this.type = "None"
+    },
         getline(item) {
             axios
                 .get("http://localhost:3000/orderline", { params: { order_id: item.order_id } }, {
@@ -627,6 +650,7 @@ export default {
                 this.books = response.data.book;
                 this.customerH = response.data.customerH
                 this.customer = response.data.customer
+                this.authors = response.data.author
                 console.log(this.customerH)
 
             })

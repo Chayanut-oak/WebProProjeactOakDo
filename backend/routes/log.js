@@ -1,6 +1,8 @@
 const express = require("express");
 const path = require("path")
 const pool = require("../config");
+const Joi = require('joi')
+const argon2 = require('argon2');
 
 
 router = express.Router();
@@ -8,8 +10,23 @@ router = express.Router();
 const multer = require('multer');
 const { error } = require("console");
 
+
+const loginSchema = Joi.object({
+  email: Joi.string().required(),
+  password: Joi.string().required()
+})
+
+
 // Login
 router.post('/SignIn', async function (req, res, next) {
+
+
+  try {
+    await loginSchema.validateAsync(req.body, { abortEarly: false })
+  } catch (err) {
+    return res.status(400).send(err)
+  }
+
   const conn = await pool.getConnection()
   // Begin transaction
   await conn.beginTransaction();
@@ -18,17 +35,31 @@ router.post('/SignIn', async function (req, res, next) {
 
   try {
     let results = await conn.query(
-      "SELECT * from Customer where email = ? and password = ?;",
-      [email, password]
+      "SELECT * from Customer where email = ?;",
+      [email]
     );
     let results2 = await conn.query(
-      "SELECT * from Admin where admin_email = ? and admin_password = ?;",
-      [email, password]
+      "SELECT * from Admin where admin_email = ? and where admin_password;",
+      [email]
     );
+    console.log(results[0][0].password)
+
+
+
     if (results[0].length != 0) {
+      if (!(await argon2.verify(results[0][0].password, password))) {
+        throw new Error('Invalid Email or Password')
+      }
       const val = { result: results[0], message: "customer" }
+
+      
       res.json(val)
+    
+    
     } else if (results2[0].length != 0) {
+      // if (!(await argon2.verify(results2[0][0].password, password))) {
+      //   throw new Error('Invalid Email or Password')
+      // }
       const val2 = { result: results2[0], message: "Addmin" }
       res.json(val2)
     } else {
@@ -39,39 +70,89 @@ router.post('/SignIn', async function (req, res, next) {
   }
 
 });
+
+
+
+const passwordValidator = (value, helpers) => {
+  if (value.length < 8) {
+    throw new Joi.ValidationError('Password must contain at least 8 characters')
+  }
+  if (!(value.match(/[a-z]/) && value.match(/[A-Z]/) && value.match(/[0-9]/))) {
+    throw new Joi.ValidationError('Password must be harder')
+  }
+  return value
+}
+
+const emailValidator = async (value, helpers) => {
+  const [rows, _] = await pool.query(
+    "SELECT email FROM customer WHERE email = ?",
+    [value]
+  )
+  if (rows.length > 0) {
+    console.log(rows.length)
+    const message = 'This email is already taken' + rows.length
+    throw new Joi.ValidationError(message, { message })
+  }
+  return value
+}
+
+const signupSchema = Joi.object({
+  email: Joi.string().required().email().external(emailValidator),
+  pnum: Joi.string().required().pattern(/0[0-9]{9}/),
+  fname: Joi.string().required().max(150),
+  lname: Joi.string().required().max(150),
+  password: Joi.string().required().custom(passwordValidator),
+  conpassword: Joi.string().required().valid(Joi.ref('password')),
+  address: Joi.string().required().max(150),
+})
+
+
+
 router.post('/SignUp', async function (req, res, next) {
+
+  try {
+    await signupSchema.validateAsync(req.body, { abortEarly: false })
+  } catch (err) {
+    return res.status(400).json(err)
+  }
+
+
   const conn = await pool.getConnection()
   // Begin transaction
   await conn.beginTransaction();
+
   const fname = req.body.fname;
   const lname = req.body.lname;
   const email = req.body.email;
-  const password = req.body.password;
+  const password = await argon2.hash(req.body.password);
   const conpassword = req.body.conpassword;
   const address = req.body.address;
   const pnum = req.body.pnum;
+  console.log(password, conpassword)
+
+
   try {
     let results2 = await conn.query(
       "SELECT email from Customer where email = ? ;",
       [email]
-    );console.log(results2[0])
+    ); console.log(results2[0])
     let results3 = await conn.query(
       "SELECT admin_email from Admin where admin_email = ? ;",
       [email]
-    );console.log(results3[0])
-    if (results2[0].length > 0  ) {
+    ); console.log(results3[0])
+    if (results2[0].length > 0) {
       res.status(401).json("This E-mail already in exit!")
-    }else if ( results3[0].length > 0) {
+    } else if (results3[0].length > 0) {
       res.status(401).json("This E-mail already in exit! Addmin")
     }
-    else if (password == conpassword) {
+    else if (await argon2.verify(password, conpassword)) {
       await conn.query(
         "INSERT INTO Customer(fname, lname, email, password, address, phone_num, start_membership) VALUES(?, ?, ?, ?,? ,?,NOW());",
         [fname, lname, email, password, address, pnum]
       );
       conn.commit()
       res.json("success")
-      
+
     } else {
       throw new Error(error)
     }

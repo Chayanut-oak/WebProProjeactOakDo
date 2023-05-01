@@ -178,6 +178,25 @@ CREATE TABLE `Comments` (
     FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`) on delete cascade on update cascade
 );
 
+DROP TABLE IF EXISTS `cus_token`;
+
+CREATE TABLE `cus_token` (
+    `cus_token_id` VARCHAR(1000),
+    `customer_id` int(11) AUTO_INCREMENT,
+    PRIMARY KEY (`customer_id`),
+    FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`) on delete cascade on update cascade
+);
+
+DROP TABLE IF EXISTS `admin_token`;
+
+CREATE TABLE `admin_token` (
+    `admin_token_id` VARCHAR(1000),
+    `admin_id` VARCHAR(15),
+    PRIMARY KEY (`admin_id`),
+    FOREIGN KEY (`admin_id`) REFERENCES `Admin`(`admin_id`) on delete cascade on update cascade
+);
+
+
 INSERT INTO
     `Customer` (
         `password`,

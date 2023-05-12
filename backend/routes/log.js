@@ -3,6 +3,7 @@ const path = require("path")
 const pool = require("../config");
 const Joi = require('joi')
 const argon2 = require('argon2');
+const { generateToken }  = require("../utils/token");
 
 
 router = express.Router();
@@ -33,33 +34,68 @@ router.post('/SignIn', async function (req, res, next) {
   const email = req.body.email;
   const password = req.body.password;
 
+  
   try {
-    let results = await conn.query(
-      "SELECT * from Customer where email = ?;",
+    const results = await conn.query(
+      "SELECT * from customer where email = ?;",
       [email]
     );
-    let results2 = await conn.query(
-      "SELECT * from Admin where admin_email = ? and where admin_password;",
+    const results2 = await conn.query(
+      "SELECT * from admin where admin_email = ?;",
       [email]
     );
-    console.log(results[0][0].password)
-
-
+    console.log(email, password)
 
     if (results[0].length != 0) {
-      if (!(await argon2.verify(results[0][0].password, password))) {
-        throw new Error('Invalid Email or Password')
+      console.log("sss")
+      if (!!(await argon2.verify(results[0][0].password, password))) {
+        throw new Error('Invalid Email or Passwordss')
       }
+      console.log("sss")
+      const [tokens] = await conn.query(
+        'SELECT * FROM customer_token WHERE customer_id=?',
+        [results[0][0].customer_id]
+      )
+      console.log(tokens[0])
+      let token = tokens[0]?.token
+      console.log(token+"sdsd")
+        if (!token) {
+            // Generate and save token into database
+            token = generateToken()
+            await conn.query(
+                'INSERT INTO customer_token(customer_id, token) VALUES (?, ?)',
+                [results[0][0].customer_id, token]
+            )
+            conn.commit()
+            console.log(token+"iff")
+        }
       const val = { result: results[0], message: "customer" }
-
-      
       res.json(val)
+    }
     
     
-    } else if (results2[0].length != 0) {
+
+    else if (results2[0].length != 0) {
       // if (!(await argon2.verify(results2[0][0].password, password))) {
       //   throw new Error('Invalid Email or Password')
       // }
+      const [tokens] = await conn.query(
+        'SELECT * FROM admin_token WHERE admin_id=?',
+        [results[0][0].admin_id]
+      )
+      console.log(tokens[0])
+      let token = tokens[0]?.token
+      console.log(token+"sdsd")
+        if (!token) {
+            // Generate and save token into database
+            token = generateToken()
+            await conn.query(
+                'INSERT INTO admin_token(admin_id, token) VALUES (?, ?)',
+                [results[0][0].admin_id, token]
+            )
+            conn.commit()
+            console.log(token+"iff")
+        }
       const val2 = { result: results2[0], message: "Addmin" }
       res.json(val2)
     } else {

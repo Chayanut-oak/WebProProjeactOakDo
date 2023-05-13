@@ -168,7 +168,7 @@
 // import axios from "axios";
 import NavBar from "../components/NavBar.vue";
 // import booklist from "../components/book.json"
-import axios from "axios";
+import axios from '@/plugins/axios'
 
 export default {
 

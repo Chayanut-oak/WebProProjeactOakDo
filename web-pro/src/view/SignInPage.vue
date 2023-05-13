@@ -28,14 +28,14 @@
 </template>
   
 <script>
-import axios from 'axios';
+import axios from '@/plugins/axios'
 import swal from 'sweetalert2';
 export default {
   data() {
     return {
       e: "",
       pass: "",
-      id:""
+      id: ""
     }
   }, methods: {
     submit() {
@@ -43,7 +43,7 @@ export default {
       formData.append("email", this.e);
       formData.append("password", this.pass);
       axios
-        .post("http://localhost:3000/SignIn", formData, {
+        .post("/SignIn", formData, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -51,33 +51,36 @@ export default {
         .then((response) => {
           if (response.data.message == "Addmin") {
             swal.fire({
-             title: 'You login as an Admin!',
+              title: 'You login as an Admin!',
               text: 'success',
               icon: 'success'
-          }).then((next)=>{
-            if(next){
-              this.id = response.data.result[0].admin_id
-              this.$store.commit('login', this.e)
-              this.$store.commit('login2',this.id)
-              this.$router.push({ path: "/Addmin" });
-              
-            }
-          })
+            }).then((next) => {
+              if (next) {
+                this.id = response.data.result[0].admin_id
+                this.$store.commit('login', this.e)
+                this.$store.commit('login2', this.id)
+                this.$store.commit('token', response.data.token)
+                this.$emit('auth-change')
+                this.$router.push({ path: "/Addmin" });
+
+              }
+            })
           } else {
             swal.fire({
-             title: 'Login Successful',
-              text:'',
-              icon:'success'
-          }).then((next)=>{
-            if(next){
-              
-              this.id = response.data.result[0].customer_id
-              this.$store.commit('login', this.e)
-              this.$store.commit('login2',this.id)
-              this.$router.push({ path: "/" });
-             
-            }
-          })
+              title: 'Login Successful',
+              text: '',
+              icon: 'success'
+            }).then((next) => {
+              if (next) {
+                this.id = response.data.result[0].customer_id
+                this.$store.commit('login', this.e)
+                this.$store.commit('login2', this.id)
+                this.$store.commit('token', response.data.token)
+                this.$emit('auth-change')
+                this.$router.push({ path: "/" });
+
+              }
+            })
           }
           // Success! -> redirect to home page
           console.log(response)
@@ -90,8 +93,8 @@ export default {
         });
     },
 
-  },mounted(){
-    if(this.$store.state.email){
+  }, mounted() {
+    if (this.$store.state.email) {
       this.$router.push({ path: "/" })
     }
   }

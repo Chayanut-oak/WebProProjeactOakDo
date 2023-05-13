@@ -190,8 +190,8 @@ DROP TABLE IF EXISTS admin_token;
 
 CREATE TABLE admin_token (
     id INT AUTO_INCREMENT,
-    admin_tokenid VARCHAR(1000),
     admin_id int(15),
+    token VARCHAR(255),
     PRIMARY KEY (id),
     FOREIGN KEY (admin_id) REFERENCES Admin(`admin_id`) on delete cascade on update cascade
 );

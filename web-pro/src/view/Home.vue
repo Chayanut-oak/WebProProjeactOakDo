@@ -7,7 +7,7 @@
 </template>
   
   <script>
-  import axios from 'axios';
+  import axios from '@/plugins/axios'
 import CarouselBar from "../components/CarouselBar";
 import NavBar from "../components/NavBar.vue";
 import ProductsList from "../components/ProductsList.vue";
@@ -25,6 +25,7 @@ export default {
       cart:[]
     };
   },methods:{logout() {
+    
       this.$store.commit('logout')
       this.$router.push({ path: "/" });
       this.pro = null

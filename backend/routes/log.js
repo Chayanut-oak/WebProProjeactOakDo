@@ -4,6 +4,7 @@ const pool = require("../config");
 const Joi = require('joi')
 const argon2 = require('argon2');
 const { generateToken }  = require("../utils/token");
+const { isLoggedIn } = require('../middlewares')
 
 
 router = express.Router();
@@ -47,11 +48,9 @@ router.post('/SignIn', async function (req, res, next) {
     console.log(email, password)
 
     if (results[0].length != 0) {
-      console.log("sss")
-      if (!!(await argon2.verify(results[0][0].password, password))) {
+      if (!(await argon2.verify(results[0][0].password, password))) {
         throw new Error('Invalid Email or Passwordss')
       }
-      console.log("sss")
       const [tokens] = await conn.query(
         'SELECT * FROM customer_token WHERE customer_id=?',
         [results[0][0].customer_id]
@@ -67,9 +66,8 @@ router.post('/SignIn', async function (req, res, next) {
                 [results[0][0].customer_id, token]
             )
             conn.commit()
-            console.log(token+"iff")
         }
-      const val = { result: results[0], message: "customer" }
+      const val = { result: results[0], message: "customer" , token: token }
       res.json(val)
     }
     
@@ -96,7 +94,8 @@ router.post('/SignIn', async function (req, res, next) {
             conn.commit()
             console.log(token+"iff")
         }
-      const val2 = { result: results2[0], message: "Addmin" }
+      const val2 = { result: results2[0], message: "Addmin", token : token }
+      console.log(val2)
       res.json(val2)
     } else {
       throw new Error(error)
@@ -209,25 +208,31 @@ router.get("/propic", async function (req, res, next) {
     next(error)
   }
 });
-// Create new comment
-router.post('/:blogId/comments', function (req, res, next) {
-  return
-});
 
-// Update comment
-router.put('/comments/:commentId', function (req, res, next) {
-  return
-});
+router.get('/user/me', isLoggedIn, async (req, res, next) => {
+  // req.user ถูก save ข้อมูล user จาก database ใน middleware function "isLoggedIn"
+  res.json(req.user)
+})
 
-// Delete comment
-router.delete('/comments/:commentId', function (req, res, next) {
-  return
-});
+// // Create new comment
+// router.post('/:blogId/comments', function (req, res, next) {
+//   return
+// });
 
-// Delete comment
-router.put('/comments/addlike/:commentId', function (req, res, next) {
-  return
-});
+// // Update comment
+// router.put('/comments/:commentId', function (req, res, next) {
+//   return
+// });
+
+// // Delete comment
+// router.delete('/comments/:commentId', function (req, res, next) {
+//   return
+// });
+
+// // Delete comment
+// router.put('/comments/addlike/:commentId', function (req, res, next) {
+//   return
+// });
 
 
 exports.router = router

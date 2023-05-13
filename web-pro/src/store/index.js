@@ -13,7 +13,8 @@ export default  createStore({
     state:{
         id:"",
         email:"",
-        prevId: '' 
+        prevId: '' ,
+        token: "",
     },
     getters:{
 
@@ -26,9 +27,14 @@ export default  createStore({
         },login2(state,id){
             state.id = id
             localStorage.setItem('id',id);
+        },
+        token(state,token){
+            state.token = token
+            localStorage.setItem('token',token);
         },logout(state){
             state.email="";
             state.id ="";
+            localStorage.removeItem('token')
             localStorage.removeItem("email");
             localStorage.removeItem('cart')
             localStorage.removeItem('id')
@@ -39,6 +45,9 @@ export default  createStore({
             }
             if(localStorage.getItem('id')){
                 state.id = localStorage.getItem('id');
+            }
+            if(localStorage.getItem('token')){
+                state.token = localStorage.getItem('token');
             }
         }
     },

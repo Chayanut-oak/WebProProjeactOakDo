@@ -16,20 +16,30 @@ async function isLoggedIn(req, res, next) {
     if (part1 !== 'Bearer' || !part2) {
         return res.status(401).send('You are not logged in')
     }
-
+console.log([part2]+"part2")
     // Check token
-    const [tokens] = await pool.query('SELECT * FROM tokens WHERE customer_token = ?', [part2])
-    const token = tokens[0]
-    if (!token) {
+    const [custokens] = await pool.query('SELECT * FROM customer_token WHERE token = ?', [part2])
+    const [adtokens] = await pool.query('SELECT * FROM admin_token WHERE token = ?', [part2])
+    if (!custokens[0] || !adtokens[0]) {
         return res.status(401).send('You are not logged in')
     }
 
     // Set user
-    const [users] = await pool.query(
-        'SELECT id, username, first_name, last_name, email, picture, mobile, join_date, role ' +
-        'FROM users WHERE id = ?', [token.user_id]
-    )
-    req.user = users[0]
+    if (custokens[0].length != 0) {
+        const [users1] = await pool.query(
+            'SELECT customer_id, email, fname, lname, email, customer_img, phone_num, start_membership ' +
+            'FROM users WHERE id = ?', [token.customer_id]
+        )
+        req.user = users1[0]
+    }
+    // else if (adtokens[0].length != 0) {
+    //     const [users2] = await pool.query(
+    //         'SELECT customer_id, email, fname, lname, email, customer_img, phone_num, start_membership ' +
+    //         'FROM users WHERE id = ?', [token.customer_id]
+    //     )
+    //     req.user = users2[0]
+    // }
+
 
     next()
 }

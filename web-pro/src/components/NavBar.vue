@@ -182,7 +182,7 @@ const navigation = [{ name: "Home", href: "/", current: false }];
 const Open = ref(false);
 </script>
 <script>
-/* eslint-disable */ import axios from 'axios';
+/* eslint-disable */ import axios from '@/plugins/axios'
 export default {
   props: {
     cart: Array,

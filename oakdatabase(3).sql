@@ -22,191 +22,190 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */
 ;
 
-DROP TABLE IF EXISTS `Admin`;
+DROP TABLE IF EXISTS Admin;
 
-CREATE TABLE `Admin` (
-    `admin_id` VARCHAR(15),
-    `admin_password` VARCHAR(100),
-    `admin_fname` VARCHAR(100),
-    `admin_lname` VARCHAR(100),
-    `admin_phone` CHAR(10),
-    `admin_email` VARCHAR(100),
-    PRIMARY KEY (`admin_id`),
-    KEY `NN` (
-        `admin_password`,
-        `admin_fname`,
-        `admin_lname`,
-        `admin_phone`,
-        `admin_email`
+CREATE TABLE Admin (
+    admin_id int(15) AUTO_INCREMENT,
+    admin_password VARCHAR(100),
+    admin_fname VARCHAR(100),
+    admin_lname VARCHAR(100),
+    admin_phone CHAR(10),
+    admin_email VARCHAR(100),
+    PRIMARY KEY (admin_id),
+    KEY NN (
+        admin_password,
+        admin_fname,
+        admin_lname,
+        admin_phone,
+        admin_email
     )
 );
 
-DROP TABLE IF EXISTS `Customer`;
+DROP TABLE IF EXISTS Customer;
 
-CREATE TABLE `Customer` (
-    `customer_id` int(11) AUTO_INCREMENT,
-    `password` VARCHAR(100),
-    `fname` VARCHAR(100),
-    `lname` VARCHAR(100),
-    `email` VARCHAR(100),
-    `phone_num` CHAR(10),
-    `address` VARCHAR(100),
-    `customer_img` VARCHAR(100),
-    `start_membership` DATE,
-    PRIMARY KEY (`customer_id`),
-    KEY `NN` (
-        `password`,
-        `fname`,
-        `lname`,
-        `email`,
-        `phone_num`,
-        `address`,
-        `start_membership`
+CREATE TABLE Customer (
+    customer_id int(11) AUTO_INCREMENT,
+    password VARCHAR(100),
+    fname VARCHAR(100),
+    lname VARCHAR(100),
+    email VARCHAR(100),
+    phone_num CHAR(10),
+    address VARCHAR(100),
+    customer_img VARCHAR(100),
+    start_membership DATE,
+    PRIMARY KEY (customer_id),
+    KEY NN (
+        password,
+        fname,
+        lname,
+        email,
+        phone_num,
+        address,
+        start_membership
     )
 );
 
-DROP TABLE IF EXISTS `Publisher`;
+DROP TABLE IF EXISTS Publisher;
 
-CREATE TABLE `Publisher` (
-    `publisher_id` INT AUTO_INCREMENT,
-    `publisher_name` VARCHAR(100),
-    PRIMARY KEY (`publisher_id`),
-    KEY `NN` (`publisher_name`)
+CREATE TABLE Publisher (
+    publisher_id INT AUTO_INCREMENT,
+    publisher_name VARCHAR(100),
+    PRIMARY KEY (publisher_id),
+    KEY NN (publisher_name)
 );
 
-DROP TABLE IF EXISTS `Book_order`;
+DROP TABLE IF EXISTS Book_order;
 
-CREATE TABLE `Book_order` (
-    `order_id` int(11) AUTO_INCREMENT,
-    `customer_id` int(11),
-    `date_of_borrow` DATE,
-    `end_of_date` DATE,
-    PRIMARY KEY (`order_id`),
-    FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`) on delete cascade on update cascade,
-    KEY `NN` (`date_of_borrow`, `end_of_date`)
+CREATE TABLE Book_order (
+    order_id int(11) AUTO_INCREMENT,
+    customer_id int(11),
+    date_of_borrow DATE,
+    end_of_date DATE,
+    PRIMARY KEY (order_id),
+    FOREIGN KEY (customer_id) REFERENCES Customer(`customer_id`) on delete cascade on update cascade,
+    KEY NN (date_of_borrow, end_of_date)
 );
 
-DROP TABLE IF EXISTS `Author`;
+DROP TABLE IF EXISTS Author;
 
-CREATE TABLE `Author` (
-    `author_id` int(3) AUTO_INCREMENT,
-    `author_name` VARCHAR(100),
-    `author_alias` VARCHAR(100),
-    PRIMARY KEY (`author_id`),
-    KEY `NN` (`author_name`),
-    KEY `UNIQUE` (`author_alias`)
+CREATE TABLE Author (
+    author_id int(3) AUTO_INCREMENT,
+    author_name VARCHAR(100),
+    author_alias VARCHAR(100),
+    PRIMARY KEY (author_id),
+    KEY NN (author_name),
+	UNIQUE (author_alias)
 );
 
-DROP TABLE IF EXISTS `Books`;
+DROP TABLE IF EXISTS Books;
 
-CREATE TABLE `Books` (
-    `isbn` VARCHAR(13),
-    `book_name` VARCHAR(100),
-    `book_img` VARCHAR(100),
-    `book_desc` VARCHAR(100),
-    `publishered_date` DATE,
-    `publisher_id` INT,
-    `book_stock` INT,
-    PRIMARY KEY (`isbn`),
-    KEY `NN` (`book_name`, `book_desc`, `book_stock`)
+CREATE TABLE Books (
+    isbn VARCHAR(13),
+    book_name VARCHAR(100),
+    book_img VARCHAR(100),
+    book_desc VARCHAR(100),
+    publishered_date DATE,
+    publisher_id INT,
+    book_stock INT,
+    PRIMARY KEY (isbn),
+    KEY NN (book_name, book_desc, book_stock)
 );
 
-DROP TABLE IF EXISTS `Book_order_line`;
+DROP TABLE IF EXISTS Book_order_line;
 
-CREATE TABLE `Book_order_line` (
-    `order_line_id` INT AUTO_INCREMENT,
-    `order_id` int(11),
-    `isbn` VARCHAR(13),
-    `status` ENUM('Borrowed', 'Returned'),
-    PRIMARY KEY (`order_line_id`),
-    FOREIGN KEY (`order_id`) REFERENCES `Book_order`(`order_id`) on delete cascade on update cascade,
-    FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`) on delete cascade on update cascade,
-    KEY `NN` (`status`)
+CREATE TABLE Book_order_line (
+    order_line_id INT AUTO_INCREMENT,
+    order_id int(11),
+    isbn VARCHAR(13),
+    status ENUM('Borrowed', 'Returned'),
+    PRIMARY KEY (order_line_id),
+    FOREIGN KEY (order_id) REFERENCES Book_order(`order_id`) on delete cascade on update cascade,
+    FOREIGN KEY (isbn) REFERENCES Books(`isbn`) on delete cascade on update cascade,
+    KEY NN (status)
 );
 
-DROP TABLE IF EXISTS `Type`;
+DROP TABLE IF EXISTS Type;
 
-CREATE TABLE `Type` (
-    `Type_id` CHAR(3),
-    `book_type` VARCHAR(100),
-    PRIMARY KEY (`Type_id`),
-    KEY `UNIQUE` (`book_type`)
+CREATE TABLE Type (
+    Type_id CHAR(3),
+    book_type VARCHAR(100),
+    PRIMARY KEY (Type_id),
+	UNIQUE (book_type)
 );
 
-DROP TABLE IF EXISTS `Book_type`;
+DROP TABLE IF EXISTS Book_type;
 
-CREATE TABLE `Book_type` (
-    `isbn` VARCHAR(13),
-    `Type_id` CHAR(3),
-    primary key (`isbn`, `Type_id`),
-    FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`) on delete cascade on update cascade,
-    FOREIGN KEY (`Type_id`) REFERENCES `Type`(`Type_id`) on delete cascade on update cascade
+CREATE TABLE Book_type (
+    isbn VARCHAR(13),
+    Type_id CHAR(3),
+    primary key (isbn, Type_id),
+    FOREIGN KEY (isbn) REFERENCES Books(`isbn`) on delete cascade on update cascade,
+    FOREIGN KEY (Type_id) REFERENCES Type(`Type_id`) on delete cascade on update cascade
 );
 
-DROP TABLE IF EXISTS `Book_Author`;
+DROP TABLE IF EXISTS Book_Author;
 
-CREATE TABLE `Book_Author` (
-    `isbn` VARCHAR(13),
-    `author_id` int(3),
-    FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`) on delete cascade on update cascade,
-    FOREIGN KEY (`author_id`) REFERENCES `Author`(`author_id`) on delete cascade on update cascade
+CREATE TABLE Book_Author (
+    isbn VARCHAR(13),
+    author_id int(3),
+    FOREIGN KEY (isbn) REFERENCES Books(`isbn`) on delete cascade on update cascade,
+    FOREIGN KEY (author_id) REFERENCES Author(`author_id`) on delete cascade on update cascade
 );
 
-DROP TABLE IF EXISTS `Book_possession`;
+DROP TABLE IF EXISTS Book_possession;
 
-CREATE TABLE `Book_possession` (
-	`bp_id` int(11) AUTO_INCREMENT,
+CREATE TABLE Book_possession (
+	bp_id int(11) AUTO_INCREMENT,
 
-    `customer_id` int(11),
-    `isbn` VARCHAR(13),
-    primary key (`bp_id`),
-    FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`) on delete cascade on update cascade,
-    FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`) on delete cascade on update cascade
+    customer_id int(11),
+    isbn VARCHAR(13),
+    primary key (bp_id),
+    FOREIGN KEY (customer_id) REFERENCES Customer(`customer_id`) on delete cascade on update cascade,
+    FOREIGN KEY (isbn) REFERENCES Books(`isbn`) on delete cascade on update cascade
 );
 
-drop table if exists `Comments`;
+drop table if exists Comments;
 
-CREATE TABLE `Comments` (
-    `comment_id` INT(11) AUTO_INCREMENT,
-    `isbn` VARCHAR(13),
-    `customer_id` INT(11),
-    `comment` VARCHAR(255),
-    `created_when` timestamp,
-    PRIMARY KEY (`comment_id`),
-    KEY `NN` (`comment`, `created_when`),
-    FOREIGN KEY (`isbn`) REFERENCES `Books`(`isbn`) on delete cascade on update cascade,
-    FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`) on delete cascade on update cascade
+CREATE TABLE Comments (
+    comment_id INT(11) AUTO_INCREMENT,
+    isbn VARCHAR(13),
+    customer_id INT(11),
+    comment VARCHAR(255),
+    created_when timestamp,
+    PRIMARY KEY (comment_id),
+    KEY NN (comment, created_when),
+    FOREIGN KEY (isbn) REFERENCES Books(`isbn`) on delete cascade on update cascade,
+    FOREIGN KEY (customer_id) REFERENCES Customer(`customer_id`) on delete cascade on update cascade
 );
 
-DROP TABLE IF EXISTS `cus_token`;
+DROP TABLE IF EXISTS customer_token;
 
-CREATE TABLE `cus_token` (
-    `cus_token_id` VARCHAR(1000),
-    `customer_id` int(11) AUTO_INCREMENT,
-    PRIMARY KEY (`customer_id`),
-    FOREIGN KEY (`customer_id`) REFERENCES `Customer`(`customer_id`) on delete cascade on update cascade
+CREATE TABLE customer_token (
+    id INT AUTO_INCREMENT PRIMARY KEY ,
+    customer_id INT,
+    token VARCHAR(255),
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id)
 );
+DROP TABLE IF EXISTS admin_token;
 
-DROP TABLE IF EXISTS `admin_token`;
-
-CREATE TABLE `admin_token` (
-    `admin_token_id` VARCHAR(1000),
-    `admin_id` VARCHAR(15),
-    PRIMARY KEY (`admin_id`),
-    FOREIGN KEY (`admin_id`) REFERENCES `Admin`(`admin_id`) on delete cascade on update cascade
+CREATE TABLE admin_token (
+    id INT AUTO_INCREMENT,
+    admin_tokenid VARCHAR(1000),
+    admin_id int(15),
+    PRIMARY KEY (id),
+    FOREIGN KEY (admin_id) REFERENCES Admin(`admin_id`) on delete cascade on update cascade
 );
-
 
 INSERT INTO
-    `Customer` (
-        `password`,
-        `fname`,
-        `lname`,
-        `email`,
-        `phone_num`,
-        `address`,
-        `customer_img`,
-        `start_membership`
+    Customer (
+        password,
+        fname,
+        lname,
+        email,
+        phone_num,
+        address,
+        customer_img,
+        start_membership
     )
 VALUES
     (
@@ -311,17 +310,17 @@ VALUES
     );
 
 INSERT INTO
-    `Admin` (
-        `admin_id`,
-        `admin_password`,
-        `admin_fname`,
-        `admin_lname`,
-        `admin_phone`,
-        `admin_email`
+    Admin (
+
+        admin_password,
+        admin_fname,
+        admin_lname,
+        admin_phone,
+        admin_email
     )
 VALUES
     (
-        'AD001',
+
         'pass123',
         'John',
         'Doe',
@@ -329,7 +328,7 @@ VALUES
         'johndoe@example.com'
     ),
     (
-        'AD002',
+
         'pass456',
         'Jane',
         'Doe',
@@ -337,7 +336,7 @@ VALUES
         'janedoe@example.com'
     ),
     (
-        'AD003',
+
         'pass789',
         'Michael',
         'Smith',
@@ -345,7 +344,7 @@ VALUES
         'michaelsmith@example.com'
     ),
     (
-        'AD004',
+
         'passabc',
         'Emily',
         'Davis',
@@ -353,7 +352,7 @@ VALUES
         'emilydavis@example.com'
     ),
     (
-        'AD005',
+
         'passdef',
         'David',
         'Wilson',
@@ -361,7 +360,7 @@ VALUES
         'davidwilson@example.com'
     ),
     (
-        'AD006',
+
         'passghi',
         'Susan',
         'Garcia',
@@ -369,7 +368,7 @@ VALUES
         'susangarcia@example.com'
     ),
     (
-        'AD007',
+
         'passjkl',
         'Daniel',
         'Brown',
@@ -377,7 +376,7 @@ VALUES
         'danielbrown@example.com'
     ),
     (
-        'AD008',
+
         'passmno',
         'Laura',
         'Jones',
@@ -385,7 +384,7 @@ VALUES
         'laurajones@example.com'
     ),
     (
-        'AD009',
+
         'passpqr',
         'Brian',
         'Taylor',
@@ -393,7 +392,7 @@ VALUES
         'briantaylor@example.com'
     ),
     (
-        'AD010',
+
         'passstu',
         'Jessica',
         'Clark',
@@ -402,14 +401,14 @@ VALUES
     );
 
 INSERT INTO
-    `Books` (
-        `isbn`,
-        `book_name`,
-        `book_img`,
-        `book_desc`,
-        `publishered_date`,
-        `publisher_id`,
-        `book_stock`
+    Books (
+        isbn,
+        book_name,
+        book_img,
+        book_desc,
+        publishered_date,
+        publisher_id,
+        book_stock
     )
 VALUES
     (
@@ -504,7 +503,7 @@ VALUES
     );
 
 INSERT INTO
-    `Publisher` (`publisher_name`)
+    Publisher (publisher_name)
 VALUES
     ('Penguin Books'),
     ('HarperCollins'),
@@ -518,7 +517,7 @@ VALUES
     ('Oxford University Press');
 
 INSERT INTO
-    `Author` (`author_name`, `author_alias`)
+    Author (author_name, author_alias)
 VALUES
     ('J.K. Rowling', 'Robert Galbraith'),
     ('Stephen King', NULL),
@@ -532,7 +531,7 @@ VALUES
     ('Jane Austen', NULL);
 
 INSERT INTO
-    `Book_Author` (`isbn`, `author_id`)
+    Book_Author (isbn, author_id)
 VALUES
     ('9780061120084', 1),
     -- J.K. Rowling
@@ -556,7 +555,7 @@ VALUES
 
 -- George R.R. Martin
 INSERT INTO
-    `Type` (`Type_id`, `book_type`)
+    Type (Type_id, book_type)
 VALUES
     ('FIC', 'Fiction'),
     ('NON', 'Non-fiction'),

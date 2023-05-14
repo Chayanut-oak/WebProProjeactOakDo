@@ -66,7 +66,7 @@
                                             <div class="py-2 font-semibold">First Name:</div>
                                             <div class="">{{ customer_info[0].fname }}</div>
                                             <input v-model="fname" v-show="editform" type="text" name="fname"
-                                                placeholder="New first name">
+                                             placeholder="New first name">
                                         </div>
                                         <div class="grid grid-cols-2">
                                             <div class="py-2 font-semibold">Last Name:</div>
@@ -78,7 +78,7 @@
                                             <div class="py-2 font-semibold">Contact No:</div>
                                             <div class="">{{ customer_info[0].phone_num }}</div>
                                             <input v-model="numphone" v-show="editform" type="text" name="numphone"
-                                                placeholder="New phone number">
+                                              placeholder="New phone number">
                                         </div>
                                         <div class="grid grid-cols-2">
                                             <div class="py-2 font-semibold">Email:</div>
@@ -86,7 +86,7 @@
                                                 {{ customer_info[0].email }}
                                             </div>
                                             <input v-model="newemail" v-show="editform" type="text" name="email"
-                                                placeholder="New Email">
+                                             placeholder="New Email">
                                         </div>
 
                                     </div>
@@ -96,7 +96,7 @@
                                 </div>
 
                             </form>
-                            <button v-on:click="editform = !editform"
+                            <button v-on:click="editform = !editform" @click='Editform(item)'
                                 class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">Edit
                                 Profile</button>
                         </div>
@@ -184,10 +184,10 @@ export default {
             lname: "",
             numphone: "",
             newemail: "",
-            email: this.$store.state.email,
             customer_info: null,
             file: null,
-            book_possess : null
+            book_possess : null,
+            token: this.$store.state.token
 
         };
     }, methods: {logout() {
@@ -195,7 +195,13 @@ export default {
       this.$router.push({ path: "/" });
       this.pro = null
       this.cart = []
-    },
+    },Editform(){
+        this.fname = this.customer_info[0].fname,
+        this.lname = this.customer_info[0].lname,
+        this.numphone = this.customer_info[0].phone_num,
+        this.newemail = this.customer_info[0].email 
+    }
+    ,
 
         addToCart(products) {
             this.cart.push(products)
@@ -239,20 +245,13 @@ export default {
                     },
                 })
                 .then((response) => {
-                    this.$router.push({ path: "/UserProfile" }); // Success! -> redirect to home page
                     console.log(response)
-
-                    if (this.newemail == "") {
-                        this.$store.commit('login', this.email)
-                    } else {
-                        this.$store.commit('login', this.newemail)
-                    }
-
+                    this.$store.commit('token', response.data)
                 })
                 .catch((error) => {
                     alert(error.response.data)
                 });
-
+                
 
         },
     }, created() {
@@ -263,7 +262,7 @@ export default {
             this.cart = JSON.parse(localStorage.cart);
         }
         axios
-            .get("http://localhost:3000/User", { params: { email: this.email } })
+            .get("http://localhost:3000/User", { params: { token: this.token} })
             .then((response) => {
                 this.customer_info = response.data.customer_info;
                 this.book_possess = response.data.possession
@@ -271,6 +270,7 @@ export default {
             })
             .catch((err) => {
                 console.log(err);
+                console.log(this.customer_info);
             });
         axios
             .get("http://localhost:3000/checkbook/", { params: { user: this.$store.state.id } })

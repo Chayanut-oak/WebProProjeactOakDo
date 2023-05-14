@@ -17,13 +17,15 @@ const routes = [
     {
         path: '/Products/:id',
         name: 'Products',
-        component: ProductsPage
+        component: ProductsPage,
+        
     },
     {
         
         path: '/Addmin',
         name: 'Addmin',
-        component:  AddMin
+        component:  AddMin,
+        
         
     },
     {
@@ -62,5 +64,18 @@ const router = createRouter({
     history: createWebHistory(),
     routes
 })
-
+router.beforeEach((to, from, next) => {
+    const isLoggedIn = localStorage.getItem('token')
+  
+  
+    if (to.name == "SignIn" && isLoggedIn) {
+      alert("You've already logged in")
+      next({ path: '/' })
+    }
+    if ((to.name == "Addmin" || to.name == "UserProfile") && !isLoggedIn) {
+      alert("You are not logged in")
+      next({ path: '/' })
+    }
+    next()
+  })
 export default router;

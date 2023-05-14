@@ -3,6 +3,7 @@ const pool = require("../config");
 const path = require("path")
 router = express.Router();
 const multer = require('multer')
+const { isLoggedIn } = require('../middlewares')
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -14,7 +15,7 @@ var storage = multer.diskStorage({
 })
 const upload = multer({ storage: storage })
 
-router.get("/checkout", async function (req, res, next) {
+router.get("/checkout",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection()
   // Begin transaction
   await conn.beginTransaction();
@@ -59,7 +60,6 @@ router.get("/checkbook", async function (req, res, next) {
     orderid[0].forEach(async order => {
       let isbn = await conn.query("SELECT isbn,order_id from book_order_line  where order_id = ? and status = 'Borrowed' ", [
         order.order_id]);
-      console.log(isbn[0])
 
       isbn[0].forEach(async (book ,index) => {
         await conn.query("UPDATE book_order_line set status = 'Returned'  where isbn = ? and order_id = ?", [
@@ -68,7 +68,7 @@ router.get("/checkbook", async function (req, res, next) {
           await conn.query("DELETE FROM book_possession where customer_id = ? and isbn = ?", [
             order.customer_id,  book.isbn]);
             await conn.query("UPDATE books set book_stock = book_stock+1  where isbn = ?", [
-              element.isbn]);
+              book.isbn]);
       });
     });
 
@@ -84,7 +84,7 @@ router.get("/checkbook", async function (req, res, next) {
 });
 
 
-router.get("/checkcart", async function (req, res, next) {
+router.get("/checkcart",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection()
   // Begin transaction
   await conn.beginTransaction();
@@ -108,7 +108,7 @@ router.get("/checkcart", async function (req, res, next) {
     conn.release();
   }
 });
-router.put("/returnBook", async function (req, res, next) {
+router.put("/returnBook",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection()
   // Begin transaction
   await conn.beginTransaction();

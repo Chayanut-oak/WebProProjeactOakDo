@@ -31,13 +31,16 @@ CREATE TABLE Admin (
     admin_lname VARCHAR(100),
     admin_phone CHAR(10),
     admin_email VARCHAR(100),
+    customer_img VARCHAR(100),
+    start_membership DATE,
     PRIMARY KEY (admin_id),
     KEY NN (
         admin_password,
         admin_fname,
         admin_lname,
         admin_phone,
-        admin_email
+        admin_email,
+        start_membership
     )
 );
 
@@ -207,198 +210,6 @@ INSERT INTO
         customer_img,
         start_membership
     )
-VALUES
-    (
-        'password1',
-        'John',
-        'Doe',
-        'john.doe@example.com',
-        '1234567890',
-        '123 Main St',
-        'img1.jpg',
-        '2021-01-01'
-    ),
-    (
-        'password2',
-        'Jane',
-        'Smith',
-        'jane.smith@example.com',
-        '2345678901',
-        '456 Park Ave',
-        'img2.jpg',
-        '2021-01-02'
-    ),
-    (
-        'password3',
-        'Bob',
-        'Johnson',
-        'bob.johnson@example.com',
-        '3456789012',
-        '789 Broadway',
-        'img3.jpg',
-        '2021-01-03'
-    ),
-    (
-        'password4',
-        'Alice',
-        'Williams',
-        'alice.williams@example.com',
-        '4567890123',
-        '321 Elm St',
-        'img4.jpg',
-        '2021-01-04'
-    ),
-    (
-        'password5',
-        'Mike',
-        'Brown',
-        'mike.brown@example.com',
-        '5678901234',
-        '654 Oak Ave',
-        'img5.jpg',
-        '2021-01-05'
-    ),
-    (
-        'password6',
-        'Sarah',
-        'Taylor',
-        'sarah.taylor@example.com',
-        '6789012345',
-        '987 Maple St',
-        'img6.jpg',
-        '2021-01-06'
-    ),
-    (
-        'password7',
-        'Tom',
-        'Anderson',
-        'tom.anderson@example.com',
-        '7890123456',
-        '159 Cherry Ln',
-        'img7.jpg',
-        '2021-01-07'
-    ),
-    (
-        'password8',
-        'Emily',
-        'Jackson',
-        'emily.jackson@example.com',
-        '8901234567',
-        '753 Pine St',
-        'img8.jpg',
-        '2021-01-08'
-    ),
-    (
-        'password9',
-        'Chris',
-        'Davis',
-        'chris.davis@example.com',
-        '9012345678',
-        '246 Cedar Ave',
-        'img9.jpg',
-        '2021-01-09'
-    ),
-    (
-        'password10',
-        'Olivia',
-        'Wilson',
-        'olivia.wilson@example.com',
-        '0123456789',
-        '852 Walnut Blvd',
-        'img10.jpg',
-        '2021-01-10'
-    );
-
-INSERT INTO
-    Admin (
-
-        admin_password,
-        admin_fname,
-        admin_lname,
-        admin_phone,
-        admin_email
-    )
-VALUES
-    (
-
-        'pass123',
-        'John',
-        'Doe',
-        '1234567890',
-        'johndoe@example.com'
-    ),
-    (
-
-        'pass456',
-        'Jane',
-        'Doe',
-        '2345678901',
-        'janedoe@example.com'
-    ),
-    (
-
-        'pass789',
-        'Michael',
-        'Smith',
-        '3456789012',
-        'michaelsmith@example.com'
-    ),
-    (
-
-        'passabc',
-        'Emily',
-        'Davis',
-        '4567890123',
-        'emilydavis@example.com'
-    ),
-    (
-
-        'passdef',
-        'David',
-        'Wilson',
-        '5678901234',
-        'davidwilson@example.com'
-    ),
-    (
-
-        'passghi',
-        'Susan',
-        'Garcia',
-        '6789012345',
-        'susangarcia@example.com'
-    ),
-    (
-
-        'passjkl',
-        'Daniel',
-        'Brown',
-        '7890123456',
-        'danielbrown@example.com'
-    ),
-    (
-
-        'passmno',
-        'Laura',
-        'Jones',
-        '8901234567',
-        'laurajones@example.com'
-    ),
-    (
-
-        'passpqr',
-        'Brian',
-        'Taylor',
-        '9012345678',
-        'briantaylor@example.com'
-    ),
-    (
-
-        'passstu',
-        'Jessica',
-        'Clark',
-        '0123456789',
-        'jessicaclark@example.com'
-    );
 
 INSERT INTO
     Books (

@@ -83,7 +83,15 @@
                     : 'bg-orange-500 drop-shadow-md hover:bg-orange-600 text-white',
                   ' px-3 py-4 text-sm font-medium ease-in-out duration-200 ',
                 ]" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</a>
-
+                <div v-if="role == 'admin'" class="flex space-x-4">
+                  <a  v-for="item in navigation2" :key="item.name" :href="item.href" :class="[
+                  item.current
+                    ? 'bg-gray-900 text-white '
+                    : 'bg-orange-500 drop-shadow-md hover:bg-orange-600 text-white',
+                  ' px-3 py-4 text-sm font-medium ease-in-out duration-200 ',
+                ]" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</a>
+                </div>
+                
               </div>
             </div>
           </div>
@@ -179,6 +187,7 @@ import {
   ShoppingBagIcon,
 } from "@heroicons/vue/24/outline";
 const navigation = [{ name: "Home", href: "/", current: false }];
+const navigation2 = [{ name: "Admin", href: "/Addmin", current: false }];
 const Open = ref(false);
 </script>
 <script>
@@ -196,7 +205,8 @@ export default {
       active: false,
       typelog: "",
       pro: null,
-      newcart: this.cart
+      newcart: this.cart,
+      role:null
     };
   },
   methods: {
@@ -245,6 +255,13 @@ export default {
       .catch((error) => {
         alert(error.response.data)
       });
+      axios.get(`http://localhost:3000/user/me`)
+            .then((response) => {
+              this.role = response.data.type
+            })
+            .catch((err) => { 
+                console.log(err.response.data)
+            })
   }
 
 };

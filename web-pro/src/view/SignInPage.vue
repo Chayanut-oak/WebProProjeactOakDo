@@ -61,8 +61,7 @@ export default {
                 this.$store.commit('login2', this.id)
                 this.$store.commit('token', response.data.token)
                 this.$emit('auth-change')
-                this.$router.push({ path: "/Addmin" });
-
+                this.$router.push({ path: "/" });
               }
             })
           } else {

@@ -439,7 +439,7 @@
 <script>
 import NavBar from '../components/NavBar.vue'
 import axios from '@/plugins/axios'
-
+import swal from 'sweetalert2';
 export default {
     components: {
         NavBar,
@@ -665,6 +665,15 @@ export default {
             .catch((err) => {
                 console.log(err);
             });
+            axios.get(`http://localhost:3000/user/me`)
+            .then((response) => {
+               if(response.data.type != "admin"){
+                this.$router.push("/")
+               }
+            })
+            .catch((err) => { 
+                console.log(err.response.data)
+            })
     }
 };
 </script>

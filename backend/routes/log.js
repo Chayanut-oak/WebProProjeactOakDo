@@ -3,7 +3,7 @@ const path = require("path")
 const pool = require("../config");
 const Joi = require('joi')
 const argon2 = require('argon2');
-const { generateToken }  = require("../utils/token");
+const { generateToken } = require("../utils/token");
 const { isLoggedIn } = require('../middlewares')
 
 
@@ -21,8 +21,6 @@ const loginSchema = Joi.object({
 
 // Login
 router.post('/SignIn', async function (req, res, next) {
-
-
   try {
     await loginSchema.validateAsync(req.body, { abortEarly: false })
   } catch (err) {
@@ -34,8 +32,6 @@ router.post('/SignIn', async function (req, res, next) {
   await conn.beginTransaction();
   const email = req.body.email;
   const password = req.body.password;
-
-  
   try {
     const results = await conn.query(
       "SELECT * from customer where email = ?;",
@@ -45,56 +41,61 @@ router.post('/SignIn', async function (req, res, next) {
       "SELECT * from admin where admin_email = ?;",
       [email]
     );
-    console.log(email, password)
 
     if (results[0].length != 0) {
       if (!(await argon2.verify(results[0][0].password, password))) {
         throw new Error('Invalid Email or Passwordss')
       }
+      results[0][0].type = 'customer'
+      console.log(results[0])
       const [tokens] = await conn.query(
         'SELECT * FROM customer_token WHERE customer_id=?',
         [results[0][0].customer_id]
       )
-      console.log(tokens[0])
       let token = tokens[0]?.token
-      console.log(token+"sdsd")
-        if (!token) {
-            // Generate and save token into database
-            token = generateToken()
-            await conn.query(
-                'INSERT INTO customer_token(customer_id, token) VALUES (?, ?)',
-                [results[0][0].customer_id, token]
-            )
-            conn.commit()
-        }
-      const val = { result: results[0], message: "customer" , token: token }
+      if (!token) {
+        // Generate and save token into database
+        token = generateToken()
+        await conn.query(
+          'INSERT INTO customer_token(customer_id, token) VALUES (?, ?)',
+          [results[0][0].customer_id, token]
+        )
+        conn.commit()
+      }
+      const val = { result: results[0], message: "customer", token: token }
       res.json(val)
     }
-    
-    
-
     else if (results2[0].length != 0) {
-      // if (!(await argon2.verify(results2[0][0].password, password))) {
-      //   throw new Error('Invalid Email or Password')
-      // }
+      
+      console.log(email, password)
+      results2[0][0].type = 'admin'
       const [tokens] = await conn.query(
         'SELECT * FROM admin_token WHERE admin_id=?',
-        [results[0][0].admin_id]
+        [results2[0][0].admin_id]
       )
       console.log(tokens[0])
       let token = tokens[0]?.token
-      console.log(token+"sdsd")
-        if (!token) {
-            // Generate and save token into database
-            token = generateToken()
-            await conn.query(
-                'INSERT INTO admin_token(admin_id, token) VALUES (?, ?)',
-                [results[0][0].admin_id, token]
-            )
-            conn.commit()
-            console.log(token+"iff")
-        }
-      const val2 = { result: results2[0], message: "Addmin", token : token }
+      console.log(token + "sdsd")
+      if (!token) {
+        // Generate and save token into database
+        token = generateToken()
+        await conn.query(
+          'INSERT INTO admin_token(admin_id, token) VALUES (?, ?)',
+          [results2[0][0].admin_id, token]
+        )
+        conn.commit()
+        console.log(token + "iff")
+      }
+      // const returnbook = await conn.query(
+      //   "SELECT * from book_order where end_of_date <= CURDATE();"
+      // );
+      // const updatebook = await conn.query(
+      //   "update Book_order_line  set status = 'Returned' where order_id = ? and status = 'Borrowed';",[returnbook[0][0].order_id]
+      // );
+      // let returnStock = await conn.query('update books set book_stock = book_stock+1 where isbn = ?',[
+      //   isbn
+      // ])
+      const val2 = { result: results2[0], message: "Addmin", token: token }
       console.log(val2)
       res.json(val2)
     } else {
@@ -150,8 +151,6 @@ router.post('/SignUp', async function (req, res, next) {
   } catch (err) {
     return res.status(400).json(err)
   }
-
-
   const conn = await pool.getConnection()
   // Begin transaction
   await conn.beginTransaction();

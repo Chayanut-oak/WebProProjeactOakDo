@@ -3,8 +3,8 @@ import { createStore } from "vuex";
 const storagePlugin = store => {
  
     window.addEventListener('storage', event => {
-      if (event.key === 'email') {
-        const prevId = store.state.email
+      if (event.key === 'token') {
+        const prevId = store.state.token
         store.commit('login',prevId)
       }
     })
@@ -12,19 +12,13 @@ const storagePlugin = store => {
 export default  createStore({
     state:{
         id:"",
-        email:"",
         prevId: '' ,
         token: "",
     },
     getters:{
 
     },
-    mutations:{
-        login(state,email){
-            state.email = email;
-            localStorage.setItem('email',email);
-   
-        },login2(state,id){
+    mutations:{login2(state,id){
             state.id = id
             localStorage.setItem('id',id);
         },
@@ -32,17 +26,14 @@ export default  createStore({
             state.token = token
             localStorage.setItem('token',token);
         },logout(state){
-            state.email="";
             state.id ="";
+            state.token="";
             localStorage.removeItem('token')
-            localStorage.removeItem("email");
             localStorage.removeItem('cart')
             localStorage.removeItem('id')
         },
         initializeStore(state){
-            if(localStorage.getItem('email')){
-                state.email = localStorage.getItem('email');
-            }
+
             if(localStorage.getItem('id')){
                 state.id = localStorage.getItem('id');
             }

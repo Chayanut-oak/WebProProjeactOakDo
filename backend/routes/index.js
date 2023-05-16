@@ -4,7 +4,7 @@ const path = require("path")
 router = express.Router();
 const multer = require('multer')
 const { isLoggedIn } = require('../middlewares')
-const { generateToken }  = require("../utils/token");
+const { generateToken } = require("../utils/token");
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -25,25 +25,37 @@ router.get("/", async function (req, res, next) {
     return next(err)
   }
 });
-router.get("/User", async function (req, res, next) {
+router.get("/User",isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection()
   await conn.beginTransaction();
   const token = req.query.token
 
   try {
-    
     let results1 = await conn.query("SELECT customer_id FROM customer_token WHERE token = ?;",
       [token])
+      let results2 = await conn.query("SELECT admin_id FROM admin_token WHERE token = ?;",
+      [token])
+    const adminID = results2[0][0]
+  
     const cusID = results1[0][0]
-    let cusinfo = await conn.query("SELECT * FROM Customer where customer_id = ?;", [
-      cusID.customer_id
+    if(results1[0].length != 0){
+      let cusinfo = await conn.query("SELECT * FROM Customer where customer_id = ?;", [
+        cusID.customer_id
+      ])
+      let possession = await conn.query('select book_img, book_name, bp.*, bo.* from book_possession bp join books using(isbn) \
+      join Book_order_line using(isbn) join Book_order bo using(order_id) where bp.customer_id = ? and status = "Borrowed"', [
+        cusID.customer_id
+      ])
+       return res.json({ customer_info: cusinfo[0][0], possession: possession[0],role:req.user.type  })
+    
+    }
+    if(results2[0].length != 0){
+      let adminInfo = await conn.query("SELECT * FROM admin where admin_id = ?;", [
+        adminID.admin_id
+      ])
+      return res.json({ admin_info: adminInfo[0][0],role:req.user.type })
+    }
 
-    ])
-
-    let possession = await conn.query('select book_img, book_name, bp.*, bo.* from book_possession bp join books using(isbn) \
-    join Book_order_line using(isbn) join Book_order bo using(order_id) where bp.customer_id = ? and status = "Borrowed"', [
-      cusID.customer_id
-    ])
 
     // await conn.query("SELECT b.book_name , c.customer_img, c.start_membership, \
     // bo.date_of_borrow, bo.end_of_date, b.book_img, c.customer_id, c.fname, c.lname, c.email,\
@@ -51,19 +63,16 @@ router.get("/User", async function (req, res, next) {
     // left JOIN Books b on bp.isbn = b.isbn left JOIN Book_order bo on c.customer_id = bo.customer_id left \
     // JOIN Book_order_line bol on bol.order_id= bo.order_id where c.customer_id = ? group by b.book_name;",
     //   [cusID.customer_id])
-    res.json({ customer_info: cusinfo[0], possession: possession[0] })
-    console.log(possession[0])
 
-
+    conn.commit()
   } catch (error) {
     await conn.rollback();
     next(error);
   } finally {
-    console.log('finally')
     conn.release();
   }
 });
-router.put('/NewUser',isLoggedIn, upload.single('profile_img'), async (req, res, next) => {
+router.put('/NewUser', isLoggedIn, upload.single('profile_img'), async (req, res, next) => {
 
   const conn = await pool.getConnection()
   await conn.beginTransaction();
@@ -72,15 +81,10 @@ router.put('/NewUser',isLoggedIn, upload.single('profile_img'), async (req, res,
   const email = req.body.email
   const phonenum = req.body.numphone
   const customer_id = req.body.customer_id
-  const file = req.file;
+  const file = req.file
   try {
-   
-    token = generateToken()
-    await conn.query(
-        'UPDATE customer_token set token = ? where customer_id = ?',
-        [token, customer_id]
-    )
-    if (file) {
+    if(req.user.type == 'customer'){
+      if (file != null) {
       await conn.query(
         "UPDATE Customer SET customer_img = ? WHERE customer_id = ?;",
         [file.path.substr(6), customer_id])
@@ -105,9 +109,44 @@ router.put('/NewUser',isLoggedIn, upload.single('profile_img'), async (req, res,
         "UPDATE Customer SET phone_num = ? WHERE customer_id = ?;",
         [phonenum, customer_id])
     }
-
+    let cusinfo = await conn.query("SELECT * FROM Customer where customer_id = ?;", [
+      customer_id
+    ])
+    res.json({ cusinfo: cusinfo[0][0],role:req.user.type })
+    }
+    if(req.user.type == 'admin'){
+      if (file != null) {
+      await conn.query(
+        "UPDATE admin SET admin_img = ? WHERE admin_id = ?;",
+        [file.path.substr(6), customer_id])
+    }
+    if (fname) {
+      await conn.query(
+        "UPDATE admin SET admin_fname = ? WHERE admin_id = ?;",
+        [fname, customer_id])
+    }
+    if (lname) {
+      await conn.query(
+        "UPDATE admin SET admin_lname = ? WHERE admin_id = ?;",
+        [lname, customer_id])
+    }
+    if (email) {
+      await conn.query(
+        "UPDATE admin SET admin_email = ? WHERE admin_id = ?;",
+        [email, customer_id])
+    }
+    if (phonenum) {
+      await conn.query(
+        "UPDATE admin SET admin_phone = ? WHERE admin_id = ?;",
+        [phonenum, customer_id])
+    }
+    let cusinfo = await conn.query("SELECT * FROM admin where admin_id = ?;", [
+      customer_id
+    ])
+    res.json({ cusinfo: cusinfo[0][0],role:req.user.type })
+    }
     conn.commit()
-    res.send(token)
+   
   } catch (error) {
     await conn.rollback();
     return next(error)
@@ -116,7 +155,7 @@ router.put('/NewUser',isLoggedIn, upload.single('profile_img'), async (req, res,
     conn.release();
   }
 });
-router.post("/Addbook",isLoggedIn, upload.single('book_img'), async function (req, res, next) {
+router.post("/Addbook", isLoggedIn, upload.single('book_img'), async function (req, res, next) {
   const conn = await pool.getConnection()
   await conn.beginTransaction();
   const isbn = req.body.isbn
@@ -150,7 +189,7 @@ router.post("/Addbook",isLoggedIn, upload.single('book_img'), async function (re
       let pubid = await conn.query(
         "SELECT publisher_id FROM Publisher where publisher_name = ?;", [
         publisher_name])
-      console.log(pubid[0][0])
+      
       pubid = pubid[0][0]
       if (!pubid) { //นี่คือไม่มีpublisherเลยadd
         let newpub = await conn.query(
@@ -212,12 +251,12 @@ router.get("/book", async function (req, res, next) {
       "SELECT * FROM Author;"
     )
     res.send({ book: book[0], customerH: user[0], customer: cus[0], author: author[0] })
-    console.log(user[0])
+    
   } catch (error) {
     next(error)
   }
 });
-router.delete("/bookdel",isLoggedIn, async function (req, res, next) {
+router.delete("/bookdel", isLoggedIn, async function (req, res, next) {
 
   try {
     let delbook = await pool.query(
@@ -252,7 +291,7 @@ router.get("/product/:id", async function (req, res, next) {
     conn.release();
   }
 });
-router.put("/update",isLoggedIn, upload.single('newbook_img'), async function (req, res, next) {
+router.put("/update", isLoggedIn, upload.single('newbook_img'), async function (req, res, next) {
   const conn = await pool.getConnection()
   await conn.beginTransaction();
   const isbn = req.body.isbn
@@ -267,7 +306,7 @@ router.put("/update",isLoggedIn, upload.single('newbook_img'), async function (r
   const type = req.body.type;
   const oldisbn = req.body.oldisbn;
   const oldfile = req.body.oldfile;
-  console.log(req.body)
+
   try {
     if (file) {
       const setimg = await conn.query("UPDATE Books set book_img = ? where isbn = ?", [
@@ -293,7 +332,7 @@ router.put("/update",isLoggedIn, upload.single('newbook_img'), async function (r
     let pubid = await conn.query(
       "SELECT publisher_id FROM Publisher where publisher_name = ?;", [
       publisher_name])
-    console.log(pubid[0][0])
+
     pubid = pubid[0][0]
     if (!pubid) { //นี่คือไม่มีpublisherเลยadd
       let newpub = await conn.query(
@@ -346,7 +385,7 @@ router.get("/order", async function (req, res, next) {
     console.log('finally')
   }
 });
-router.get("/orderline",isLoggedIn, async function (req, res, next) {
+router.get("/orderline", isLoggedIn, async function (req, res, next) {
   orderid = req.query.order_id
   try {
     const orderline = await pool.query("SELECT * FROM book_order_line WHERE order_id = ?", [

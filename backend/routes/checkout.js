@@ -21,7 +21,7 @@ router.get("/checkout",isLoggedIn, async function (req, res, next) {
   await conn.beginTransaction();
   const userid = req.query.user
   const book = req.query.book
-  console.log(req.query.book)
+  
   try {
 
     const orderid = await conn.query("INSERT INTO book_order (customer_id,date_of_borrow,end_of_date) VALUES(?,NOW(),date_add(now(),interval 7 day));", [
@@ -64,7 +64,7 @@ router.get("/checkbook", async function (req, res, next) {
       isbn[0].forEach(async (book ,index) => {
         await conn.query("UPDATE book_order_line set status = 'Returned'  where isbn = ? and order_id = ?", [
           book.isbn, book.order_id]);
-          console.log(orderid[0][index],"hello")
+         
           await conn.query("DELETE FROM book_possession where customer_id = ? and isbn = ?", [
             order.customer_id,  book.isbn]);
             await conn.query("UPDATE books set book_stock = book_stock+1  where isbn = ?", [
@@ -114,8 +114,7 @@ router.put("/returnBook",isLoggedIn, async function (req, res, next) {
   await conn.beginTransaction();
   const userid = req.body.params.userId
   const isbn = req.body.params.isbn
-  console.log(req.body.params.isbn)
-  console.log(userid, isbn)
+ 
   try {
     let returnBookFromPossession = await conn.query("delete from book_possession where isbn = ? and customer_id = ?",[
       isbn, userid

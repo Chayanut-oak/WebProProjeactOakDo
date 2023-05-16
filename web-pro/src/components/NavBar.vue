@@ -104,7 +104,7 @@
             <!-- Profile dropdown -->
             <Menu as="div" class="relative ml-3">
               <div>
-                <MenuButton v-if="$store.state.email"
+                <MenuButton v-if="$store.state.token"
                   class="flex rounded-full hover:border-orange-500  text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800 ml-5">
                   <img class="h-9 w-9 rounded-full  hover:ring-4 hover:ring-orange-300 ease-in-out duration-200"
                     :src="pro ? `http://localhost:3000/${pro}` : 'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png'"
@@ -119,26 +119,26 @@
                 <MenuItems
                   class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <MenuItem v-slot="{ active }">
-                  <a v-show="!$store.state.email" href="/SignIn" :class="[
+                  <a v-show="!$store.state.token" href="/SignIn" :class="[
                     active ? 'bg-gray-100' : '',
                     'block px-4 py-2 text-sm text-gray-700',
                   ]">Sign In</a>
                   </MenuItem>
                   <MenuItem v-slot="{ active }">
-                  <a v-show="!$store.state.email" href="/SignUp" :class="[
+                  <a v-show="!$store.state.token" href="/SignUp" :class="[
                     active ? 'bg-gray-100' : '',
                     'block px-4 py-2 text-sm text-gray-700',
                   ]">Sign Up</a>
                   </MenuItem>
                   <MenuItem v-slot="{ active }">
-                  <a v-show="$store.state.email" href="/UserProfile" :class="[
+                  <a v-show="$store.state.token" href="/UserProfile" :class="[
                     active ? 'bg-gray-100' : '',
                     'block px-4 py-2 text-sm text-gray-700',
                   ]">Profile</a>
 
                   </MenuItem>
                   <MenuItem v-slot="{ active }">
-                  <a v-show="$store.state.email" @click="logout()" :class="[
+                  <a v-show="$store.state.token" @click="logout(),clearrole()" :class="[
                     active ? 'bg-gray-100' : '',
                     'block px-4 py-2 text-sm text-gray-700',
                   ]">Sign Out</a>
@@ -206,12 +206,15 @@ export default {
       typelog: "",
       pro: null,
       newcart: this.cart,
-      role:null
+      role:null,
+      token:this.$store.state.token
     };
   },
   methods: {
     toggle() {
       this.active = !this.active;
+    },clearrole() {
+     this.role = null
     },
     goCheckout() {
       axios
@@ -247,21 +250,24 @@ export default {
   }, created() {
     
     axios
-      .get("http://localhost:3000/propic", { params: { mail: this.$store.state.email, } })
-      .then((response) => {
-        this.pro = response.data.propic[0].customer_img;
-        console.log(response.data.propic[0].customer_img)
-      })
-      .catch((error) => {
-        alert(error.response.data)
-      });
-      axios.get(`http://localhost:3000/user/me`)
+            .get("http://localhost:3000/User", { params: { token: this.token } })
             .then((response) => {
-              this.role = response.data.type
+              this.role = response.data.role
+                if (this.role == 'customer') {
+                    this.pro = response.data.customer_info.customer_img
+                }
+                else if (this.role == 'admin') {
+                    this.pro = response.data.admin_info.admin_img
+                }
+                
+
             })
-            .catch((err) => { 
-                console.log(err.response.data)
-            })
+            .catch((err) => {
+                console.log(err);
+                console.log(this.customer_info);
+            });
+            console.log(this.customer_info);
+          
   }
 
 };

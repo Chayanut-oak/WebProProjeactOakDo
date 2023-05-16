@@ -8,21 +8,21 @@
                     <div class="lg:w-4/5 mx-auto flex flex-wrap justify-center">
                         <div class="basic1/2">
                             <img alt="ecommerce" class="w-96 object-cover object-center rounded border border-gray-200"
-                                :src="`http://localhost:3000/${book.book_img}`">
+                            :src="bookimg ? `http://localhost:3000/${bookimg}` : 'https://bulma.io/images/placeholders/640x360.png'">
                         </div>
                         <div class="lg:basis-1/2">
                             <div class="w-full lg:pl-10 py-6 mt-6 lg:mt-0">
-                                <h2 class="text-sm title-font text-gray-500 tracking-widest">Author: {{ book.author_name }}
+                                <h2 class="text-sm title-font text-gray-500 tracking-widest">Author: {{ author_name }}
                                 </h2>
-                                <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">{{ book.book_name }}</h1>
+                                <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">{{ bookname }}</h1>
                                 <div class="flex mb-4 text-sm title-font text-gray-500 tracking-widest">
-                                    ISBN : {{ book.isbn }}
+                                    ISBN : {{ isbn }}
                                 </div>
-                                <p class="leading-relaxed">{{ book.book_desc }}</p>
+                                <p class="leading-relaxed">{{ book_desc }}</p>
                                 <div class="bottom-0 inset-x-0  m-1 flex">
                                     <button
                                         class="flex ml-auto text-white  border-0 py-2 px-6 focus:outline-none bg-blue-500 hover:bg-blue-700 rounded "
-                                        @click="addToCart(book)">Borrow</button>
+                                        @click="addToCart(  )">Borrow</button>
                                     <button
                                         class="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
                                         <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -85,8 +85,13 @@ export default {
         return {
             book: null,
             cart: [],
-            comment: null,
-            allcom: null
+            comment: "",
+            bookimg: null,
+            author_name: null,
+            bookname: null,
+            book_desc: null,
+            isbn:null,
+            cusimg:null,
         };
     },
     methods: {
@@ -100,7 +105,7 @@ export default {
             const exitproduct = this.cart.find(cartproduct => cartproduct.isbn === products.isbn)
             if (exitproduct) {
                 alert('This book is already in your cart.')
-            } else if (!this.$store.state.email) {
+            } else if (!this.$store.state.token) {
                 alert("You must log in first.")
             }
             else {
@@ -125,7 +130,7 @@ export default {
         }, addComment() {
             var formData = new FormData();
             formData.append("comment", this.comment);
-            formData.append("mail", this.$store.state.email);
+            formData.append("token", this.$store.state.token);
             axios
                 .post(
                     `http://localhost:3000/${this.$route.params.id}/comments`,
@@ -156,6 +161,12 @@ export default {
                 this.book = response.data.book;
                 this.allcom = response.data.comment;
                 console.log(response.data.comment)
+                this.bookimg = this.book.book_img
+                this.bookname = this.book.book_name
+                this.author_name = this.book.author_name
+                this.book_desc = this.book.book_desc
+                this.isbn = this.book.isbn
+                this.cusimg = this.allcom.customer_img
             })
             .catch((err) => {
                 this.error = err

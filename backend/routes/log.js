@@ -47,7 +47,7 @@ router.post('/SignIn', async function (req, res, next) {
         throw new Error('Invalid Email or Passwordss')
       }
       results[0][0].type = 'customer'
-      console.log(results[0])
+      
       const [tokens] = await conn.query(
         'SELECT * FROM customer_token WHERE customer_id=?',
         [results[0][0].customer_id]
@@ -67,15 +67,15 @@ router.post('/SignIn', async function (req, res, next) {
     }
     else if (results2[0].length != 0) {
       
-      console.log(email, password)
+     
       results2[0][0].type = 'admin'
       const [tokens] = await conn.query(
         'SELECT * FROM admin_token WHERE admin_id=?',
         [results2[0][0].admin_id]
       )
-      console.log(tokens[0])
+     
       let token = tokens[0]?.token
-      console.log(token + "sdsd")
+     
       if (!token) {
         // Generate and save token into database
         token = generateToken()
@@ -84,7 +84,7 @@ router.post('/SignIn', async function (req, res, next) {
           [results2[0][0].admin_id, token]
         )
         conn.commit()
-        console.log(token + "iff")
+      
       }
       // const returnbook = await conn.query(
       //   "SELECT * from book_order where end_of_date <= CURDATE();"
@@ -96,7 +96,7 @@ router.post('/SignIn', async function (req, res, next) {
       //   isbn
       // ])
       const val2 = { result: results2[0], message: "Addmin", token: token }
-      console.log(val2)
+    
       res.json(val2)
     } else {
       throw new Error(error)
@@ -125,7 +125,7 @@ const emailValidator = async (value, helpers) => {
     [value]
   )
   if (rows.length > 0) {
-    console.log(rows.length)
+   
     const message = 'This email is already taken' + rows.length
     throw new Joi.ValidationError(message, { message })
   }
@@ -162,18 +162,18 @@ router.post('/SignUp', async function (req, res, next) {
   const conpassword = req.body.conpassword;
   const address = req.body.address;
   const pnum = req.body.pnum;
-  console.log(password, conpassword)
+  
 
 
   try {
     let results2 = await conn.query(
       "SELECT email from Customer where email = ? ;",
       [email]
-    ); console.log(results2[0])
+    ); 
     let results3 = await conn.query(
       "SELECT admin_email from Admin where admin_email = ? ;",
       [email]
-    ); console.log(results3[0])
+    ); 
     if (results2[0].length > 0) {
       res.status(401).json("This E-mail already in exit!")
     } else if (results3[0].length > 0) {
@@ -195,22 +195,14 @@ router.post('/SignUp', async function (req, res, next) {
   }
 
 });
-router.get("/propic", async function (req, res, next) {
-  try {
-    let propic = await pool.query(
-      "SELECT customer_img from Customer where email = ? ;",
-      [req.query.mail]
-    )
-    res.json({ propic: propic[0] })
 
-  } catch (error) {
-    next(error)
-  }
-});
 
 router.get('/user/me', isLoggedIn, async (req, res, next) => {
   // req.user ถูก save ข้อมูล user จาก database ใน middleware function "isLoggedIn"
-  res.json(req.user)
+ 
+    res.json(req.user)
+ 
+  
 })
 
 // // Create new comment

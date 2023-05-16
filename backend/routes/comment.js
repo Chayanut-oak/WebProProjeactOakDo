@@ -28,13 +28,13 @@ router.post('/:id/comments', async function(req, res, next){
     // Begin transaction
     await conn.beginTransaction();
     const comment = req.body.comment;
-    console.log(req.body)
+
     try {
       let cusid = await pool.query(
-        "SELECT customer_id from Customer where email = ? ;",
-        [req.body.mail]
+        "SELECT customer_id from customer_token where token = ? ;",
+        [req.body.token]
       )
-      console.log(cusid[0][0])
+
         let results = await conn.query(
           "INSERT INTO comments( isbn, customer_id, comment,created_when) VALUES(?, ?, ?, NOW());",
           [req.params.id, cusid[0][0].customer_id,comment]

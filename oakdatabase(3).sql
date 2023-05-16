@@ -31,8 +31,8 @@ CREATE TABLE Admin (
     admin_lname VARCHAR(100),
     admin_phone CHAR(10),
     admin_email VARCHAR(100),
-    customer_img VARCHAR(100),
-    start_membership DATE,
+    admin_img VARCHAR(100),
+    start_working DATE,
     PRIMARY KEY (admin_id),
     KEY NN (
         admin_password,
@@ -40,7 +40,7 @@ CREATE TABLE Admin (
         admin_lname,
         admin_phone,
         admin_email,
-        start_membership
+        start_working
     )
 );
 

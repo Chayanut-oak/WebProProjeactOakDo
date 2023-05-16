@@ -51,6 +51,10 @@
               class="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded w-full">
               ADD TO CART
             </button>
+            <button v-else 
+              class="bg-orange-200  text-black font-semibold py-2 px-4 rounded w-full">
+              OUT OF STOCK
+            </button>
           </div>
         </div>
       </div>

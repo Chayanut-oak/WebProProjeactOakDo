@@ -1,6 +1,6 @@
 <template>
     <div class="bg-gray-100 w-full h-full">
-        <NavBar :cart = "cart" :clearCart = "clearCart" :logout = "logout" />
+        <NavBar :cart="cart" :clearCart="clearCart" :logout="logout" :key="navbar_reload" />
         <div class="bg-gray-100 w-full h-full">
             <div class="container mx-auto my-5 p-5">
                 <div class="md:flex no-wrap md:-mx-2 ">
@@ -13,21 +13,21 @@
                                 <input v-if="editform" class="file-input hidden" type="file" id="file-input" ref="file"
                                     @change="handleFileUpload()" />
                                 <label for="file-input">
-                                    <img v-if="editform" class="rounded-full mt-5 w-52 h-52 lg:w-52 lg:h-52 ml-2  hover:ring-4 hover:ring-orange-300 ease-in-out duration-200"
-                                        :src="customer_info[0].customer_img ? `http://localhost:3000/${customer_info[0].customer_img}` : 'https://bulma.io/images/placeholders/640x360.png'"
+                                    <img v-if="editform"
+                                        class="rounded-full mt-5 w-52 h-52 lg:w-52 lg:h-52 ml-2  hover:ring-4 hover:ring-orange-300 ease-in-out duration-200"
+                                        :src="img ? `http://localhost:3000/${img}` : 'https://bulma.io/images/placeholders/640x360.png'"
                                         alt="">
                                     <img v-else class="rounded-full mt-5 w-52 h-52 lg:w-52 lg:h-52 ml-2"
-                                        :src="customer_info[0].customer_img ? `http://localhost:3000/${customer_info[0].customer_img}` : 'https://bulma.io/images/placeholders/640x360.png'"
+                                        :src="img ? `http://localhost:3000/${img}` : 'https://bulma.io/images/placeholders/640x360.png'"
                                         alt="">
                                 </label>
                             </div>
-                            <h1 class="text-gray-900 font-bold text-xl leading-8 my-1">{{ customer_info[0].fname }}
-                                {{ customer_info[0].lname }}</h1>
+
                             <ul
                                 class="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
                                 <li class="flex items-center py-3">
                                     <span>Member since</span>
-                                    <span class="ml-auto">{{ customer_info[0].start_membership.slice(0, 10) }}</span>
+                                    <span class="ml-auto">{{ member }}</span>
                                 </li>
                             </ul>
                         </div>
@@ -43,7 +43,7 @@
                         <!-- About Section -->
 
                         <div class="bg-white p-3 shadow-sm rounded-sm">
-                            <form>
+                            
                                 <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
                                     <span clas="text-green-500">
                                         <svg class="h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -56,46 +56,50 @@
                                 </div>
 
                                 <div class="text-gray-700">
-                                    <div class="flex">
+                                    <div v-if="this.type == 'customer'" class="flex">
                                         <div class="px-2 py-2 font-semibold">Customer ID:</div>
-                                        <div class="px-2 py-2">{{ customer_info[0].customer_id }}</div>
+                                        <div class="px-2 py-2">{{ cusid }}</div>
+                                    </div>
+                                    <div v-if="this.type == 'admin'"  class="flex">
+                                        <div class="px-2 py-2 font-semibold">Admin ID:</div>
+                                        <div class="px-2 py-2">{{ cusid }}</div>
                                     </div>
                                     <div class="grid md:grid-cols-2 text-l">
 
                                         <div class="grid grid-cols-2">
                                             <div class="py-2 font-semibold">First Name:</div>
-                                            <div class="">{{ customer_info[0].fname }}</div>
+                                            <div class="">{{ cusfname }}</div>
                                             <input v-model="fname" v-show="editform" type="text" name="fname"
-                                             placeholder="New first name">
+                                                placeholder="New first name">
                                         </div>
                                         <div class="grid grid-cols-2">
                                             <div class="py-2 font-semibold">Last Name:</div>
-                                            <div class="">{{ customer_info[0].lname }}</div>
+                                            <div class="">{{ cuslname }}</div>
                                             <input v-model="lname" v-show="editform" type="text" name="lname"
                                                 placeholder="New last name">
                                         </div>
                                         <div class="grid grid-cols-2">
                                             <div class="py-2 font-semibold">Contact No:</div>
-                                            <div class="">{{ customer_info[0].phone_num }}</div>
+                                            <div class="">{{ cusphone_num }}</div>
                                             <input v-model="numphone" v-show="editform" type="text" name="numphone"
-                                              placeholder="New phone number">
+                                                placeholder="New phone number">
                                         </div>
                                         <div class="grid grid-cols-2">
                                             <div class="py-2 font-semibold">Email:</div>
                                             <div class="py-2">
-                                                {{ customer_info[0].email }}
+                                                {{ cusemail }}
                                             </div>
                                             <input v-model="newemail" v-show="editform" type="text" name="email"
-                                             placeholder="New Email">
+                                                placeholder="New Email">
                                         </div>
 
                                     </div>
-                                    <button v-show="editform" @click="submit()"
+                                    <button v-if="editform" v-on:click="submit()"
                                         class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">Confirm
                                         new information</button>
                                 </div>
 
-                            </form>
+                            
                             <button v-on:click="editform = !editform" @click='Editform(item)'
                                 class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">Edit
                                 Profile</button>
@@ -165,6 +169,7 @@
 </template>
     
 <script>
+
 // import axios from "axios";
 import NavBar from "../components/NavBar.vue";
 // import booklist from "../components/book.json"
@@ -186,22 +191,32 @@ export default {
             newemail: "",
             customer_info: null,
             file: null,
-            book_possess : null,
-            token: this.$store.state.token
-
+            book_possess: null,
+            token: this.$store.state.token,
+            img: null,
+            member: null,
+            cusid: null,
+            cusfname: null,
+            cuslname: null,
+            cusphone_num: null,
+            cusemail: null,
+            type: null,
+            admininfo: null,
+            navbar_reload: 0
         };
-    }, methods: {logout() {
-      this.$store.commit('logout')
-      this.$router.push({ path: "/" });
-      this.pro = null
-      this.cart = []
-    },Editform(){
-        this.fname = this.customer_info[0].fname,
-        this.lname = this.customer_info[0].lname,
-        this.numphone = this.customer_info[0].phone_num,
-        this.newemail = this.customer_info[0].email 
-    }
-    ,
+    }, methods: {
+        logout() {
+            this.$store.commit('logout')
+            this.$router.push({ path: "/" });
+            this.pro = null
+            this.cart = []
+        }, Editform() {
+            this.fname = this.cusfname,
+                this.lname = this.cuslname,
+                this.numphone = this.cusphone_num,
+                this.newemail = this.cusemail
+        }
+        ,
 
         addToCart(products) {
             this.cart.push(products)
@@ -237,7 +252,7 @@ export default {
             formData.append("lname", this.lname);
             formData.append("email", this.newemail);
             formData.append("numphone", this.numphone);
-            formData.append("customer_id", this.customer_info[0].customer_id);
+            formData.append("customer_id", this.cusid);
             axios
                 .put("http://localhost:3000/NewUser", formData, {
                     headers: {
@@ -245,16 +260,38 @@ export default {
                     },
                 })
                 .then((response) => {
-                    console.log(response)
-                    this.$store.commit('token', response.data)
+                    this.type = response.data.role
+                    if (this.type == 'customer') {
+                         this.customer_info = response.data.cusinfo;
+                    this.img = this.customer_info.customer_img
+                    this.cusid = this.customer_info.customer_id
+                    this.cusfname = this.customer_info.fname
+                    this.cuslname = this.customer_info.lname
+                    this.cusphone_num = this.customer_info.phone_num
+                    this.cusemail = this.customer_info.email
+                    this.navbar_reload++
+                    }
+                    else if (this.type == 'admin') {
+                    this.admininfo = response.data.cusinfo
+                    this.img = response.data.cusinfo.admin_img
+                    this.cusid = response.data.cusinfo.admin_id
+                    this.cusfname = response.data.cusinfo.admin_fname
+                    this.cuslname = response.data.cusinfo.admin_lname
+                    this.cusphone_num = response.data.cusinfo.admin_phone
+                    this.cusemail = response.data.cusinfo.admin_email
+                    this.navbar_reload++
+                }
+                   
+                    
                 })
                 .catch((error) => {
                     alert(error.response.data)
                 });
-                
+               
 
         },
     }, created() {
+        
 
         if (localStorage.cart == undefined) {
             this.cart = [];
@@ -262,24 +299,40 @@ export default {
             this.cart = JSON.parse(localStorage.cart);
         }
         axios
-            .get("http://localhost:3000/User", { params: { token: this.token} })
+            .get("http://localhost:3000/User", { params: { token: this.token } })
             .then((response) => {
-                this.customer_info = response.data.customer_info;
-                this.book_possess = response.data.possession
-                console.log(this.customer_info);
+                this.type = response.data.role
+                if (this.type == 'customer') {
+                    this.customer_info = response.data.customer_info;
+                    this.book_possess = response.data.possession
+                    this.img = response.data.customer_info.customer_img
+                    this.member = response.data.customer_info.start_membership.slice(0, 10)
+                    this.cusid = response.data.customer_info.customer_id
+                    this.cusfname = response.data.customer_info.fname
+                    this.cuslname = response.data.customer_info.lname
+                    this.cusphone_num = response.data.customer_info.phone_num
+                    this.cusemail = response.data.customer_info.email
+                }
+                else if (this.type == 'admin') {
+                    console.log(response.data.admin_info)
+                    this.admininfo = response.data.admin_info
+                    this.img = response.data.admin_info.admin_img
+                    this.member = response.data.admin_info.start_working.slice(0, 10)
+                    this.cusid = response.data.admin_info.admin_id
+                    this.cusfname = response.data.admin_info.admin_fname
+                    this.cuslname = response.data.admin_info.admin_lname
+                    this.cusphone_num = response.data.admin_info.admin_phone
+                    this.cusemail = response.data.admin_info.admin_email
+                }
+                console.log( this.admininfo);
+
             })
             .catch((err) => {
                 console.log(err);
                 console.log(this.customer_info);
             });
-        axios
-            .get("http://localhost:3000/checkbook/", { params: { user: this.$store.state.id } })
-            .then((response) => {
-                console.log(response.data);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            console.log(this.customer_info);
+          
 
     }
 };

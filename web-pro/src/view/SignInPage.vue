@@ -13,7 +13,7 @@
         <input v-model="pass" id="password" type="password" name="password"
           class="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block w-full" />
           <div class="mt-1 text-right">
-        <router-link to="/SignUp" class="underline">Forgot password?</router-link>
+        <a class="underline">Forgot password?</a>
       </div>
       </div>
 

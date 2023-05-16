@@ -115,15 +115,6 @@
 
                         <!-- End of about section -->
 
-
-
-
-
-
-
-
-
-
                         <div class="fixed z-10 inset-0 overflow-y-auto" v-show="changeEmailModal">
                             <div
                                 class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -165,7 +156,6 @@
 
                                         </div>
                                         <div v-show="emailinput" class="w-full sm:max-w-md p-5 mx-auto">
-
                                                 <div class="mb-4">
                                                     <label class="block mb-1" for="newemail">New Email</label>
                                                     <input v-model="newemail" type="text" name="newemail"
@@ -183,19 +173,6 @@
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                         <div class="my-4"></div>
 
@@ -306,8 +283,8 @@ export default {
         }, Editform() {
             this.fname = this.cusfname,
                 this.lname = this.cuslname,
-                this.numphone = this.cusphone_num,
-                this.newemail = this.cusemail
+                this.numphone = this.cusphone_num
+                
         }
         ,
 
@@ -343,7 +320,6 @@ export default {
             formData.append("profile_img", this.file);
             formData.append("fname", this.fname);
             formData.append("lname", this.lname);
-            formData.append("email", this.newemail);
             formData.append("numphone", this.numphone);
             formData.append("customer_id", this.cusid);
             axios
@@ -385,8 +361,6 @@ export default {
         },
 
         checkPassToEmail() {
-            console.log(this.cusemail)
-            console.log(this.pass)
             var formData = new FormData();
             formData.append("email", this.cusemail);
             formData.append("password", this.pass);
@@ -408,7 +382,6 @@ export default {
 
         },
         changeEmail() {
-            console.log("changeEmail")
             var formData = new FormData();
             formData.append("email", this.newemail);
             formData.append("customer_id", this.cusid);

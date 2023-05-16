@@ -86,17 +86,8 @@ router.post('/SignIn', async function (req, res, next) {
           [results2[0][0].admin_id, token]
         )
         conn.commit()
-      
       }
-      // const returnbook = await conn.query(
-      //   "SELECT * from book_order where end_of_date <= CURDATE();"
-      // );
-      // const updatebook = await conn.query(
-      //   "update Book_order_line  set status = 'Returned' where order_id = ? and status = 'Borrowed';",[returnbook[0][0].order_id]
-      // );
-      // let returnStock = await conn.query('update books set book_stock = book_stock+1 where isbn = ?',[
-      //   isbn
-      // ])
+
       const val2 = { result: results2[0], message: "Addmin", token: token }
     
       res.json(val2)

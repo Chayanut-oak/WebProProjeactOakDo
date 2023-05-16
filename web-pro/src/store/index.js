@@ -5,7 +5,7 @@ const storagePlugin = store => {
     window.addEventListener('storage', event => {
       if (event.key === 'token') {
         const prevId = store.state.token
-        store.commit('login',prevId)
+        store.commit('token',prevId)
       }
     })
   }

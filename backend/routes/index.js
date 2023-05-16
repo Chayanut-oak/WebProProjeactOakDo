@@ -5,6 +5,8 @@ router = express.Router();
 const multer = require('multer')
 const { isLoggedIn } = require('../middlewares')
 const { generateToken } = require("../utils/token");
+const Joi = require('joi')
+const argon2 = require('argon2');
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -25,7 +27,7 @@ router.get("/", async function (req, res, next) {
     return next(err)
   }
 });
-router.get("/User",isLoggedIn, async function (req, res, next) {
+router.get("/User", isLoggedIn, async function (req, res, next) {
   const conn = await pool.getConnection()
   await conn.beginTransaction();
   const token = req.query.token
@@ -33,12 +35,12 @@ router.get("/User",isLoggedIn, async function (req, res, next) {
   try {
     let results1 = await conn.query("SELECT customer_id FROM customer_token WHERE token = ?;",
       [token])
-      let results2 = await conn.query("SELECT admin_id FROM admin_token WHERE token = ?;",
+    let results2 = await conn.query("SELECT admin_id FROM admin_token WHERE token = ?;",
       [token])
     const adminID = results2[0][0]
-  
+
     const cusID = results1[0][0]
-    if(results1[0].length != 0){
+    if (results1[0].length != 0) {
       let cusinfo = await conn.query("SELECT * FROM Customer where customer_id = ?;", [
         cusID.customer_id
       ])
@@ -46,14 +48,14 @@ router.get("/User",isLoggedIn, async function (req, res, next) {
       join Book_order_line using(isbn) join Book_order bo using(order_id) where bp.customer_id = ? and status = "Borrowed"', [
         cusID.customer_id
       ])
-       return res.json({ customer_info: cusinfo[0][0], possession: possession[0],role:req.user.type  })
-    
+      return res.json({ customer_info: cusinfo[0][0], possession: possession[0], role: req.user.type })
+
     }
-    if(results2[0].length != 0){
+    if (results2[0].length != 0) {
       let adminInfo = await conn.query("SELECT * FROM admin where admin_id = ?;", [
         adminID.admin_id
       ])
-      return res.json({ admin_info: adminInfo[0][0],role:req.user.type })
+      return res.json({ admin_info: adminInfo[0][0], role: req.user.type })
     }
 
 
@@ -78,75 +80,64 @@ router.put('/NewUser', isLoggedIn, upload.single('profile_img'), async (req, res
   await conn.beginTransaction();
   const fname = req.body.fname
   const lname = req.body.lname
-  const email = req.body.email
   const phonenum = req.body.numphone
   const customer_id = req.body.customer_id
   const file = req.file
   try {
-    if(req.user.type == 'customer'){
+    if (req.user.type == 'customer') {
       if (file != null) {
-      await conn.query(
-        "UPDATE Customer SET customer_img = ? WHERE customer_id = ?;",
-        [file.path.substr(6), customer_id])
+        await conn.query(
+          "UPDATE Customer SET customer_img = ? WHERE customer_id = ?;",
+          [file.path.substr(6), customer_id])
+      }
+      if (fname) {
+        await conn.query(
+          "UPDATE Customer SET fname = ? WHERE customer_id = ?;",
+          [fname, customer_id])
+      }
+      if (lname) {
+        await conn.query(
+          "UPDATE Customer SET lname = ? WHERE customer_id = ?;",
+          [lname, customer_id])
+      }
+      if (phonenum) {
+        await conn.query(
+          "UPDATE Customer SET phone_num = ? WHERE customer_id = ?;",
+          [phonenum, customer_id])
+      }
+      let cusinfo = await conn.query("SELECT * FROM Customer where customer_id = ?;", [
+        customer_id
+      ])
+      res.json({ cusinfo: cusinfo[0][0], role: req.user.type })
     }
-    if (fname) {
-      await conn.query(
-        "UPDATE Customer SET fname = ? WHERE customer_id = ?;",
-        [fname, customer_id])
-    }
-    if (lname) {
-      await conn.query(
-        "UPDATE Customer SET lname = ? WHERE customer_id = ?;",
-        [lname, customer_id])
-    }
-    if (email) {
-      await conn.query(
-        "UPDATE Customer SET email = ? WHERE customer_id = ?;",
-        [email, customer_id])
-    }
-    if (phonenum) {
-      await conn.query(
-        "UPDATE Customer SET phone_num = ? WHERE customer_id = ?;",
-        [phonenum, customer_id])
-    }
-    let cusinfo = await conn.query("SELECT * FROM Customer where customer_id = ?;", [
-      customer_id
-    ])
-    res.json({ cusinfo: cusinfo[0][0],role:req.user.type })
-    }
-    if(req.user.type == 'admin'){
+    if (req.user.type == 'admin') {
       if (file != null) {
-      await conn.query(
-        "UPDATE admin SET admin_img = ? WHERE admin_id = ?;",
-        [file.path.substr(6), customer_id])
-    }
-    if (fname) {
-      await conn.query(
-        "UPDATE admin SET admin_fname = ? WHERE admin_id = ?;",
-        [fname, customer_id])
-    }
-    if (lname) {
-      await conn.query(
-        "UPDATE admin SET admin_lname = ? WHERE admin_id = ?;",
-        [lname, customer_id])
-    }
-    if (email) {
-      await conn.query(
-        "UPDATE admin SET admin_email = ? WHERE admin_id = ?;",
-        [email, customer_id])
-    }
-    if (phonenum) {
-      await conn.query(
-        "UPDATE admin SET admin_phone = ? WHERE admin_id = ?;",
-        [phonenum, customer_id])
-    }
-    let cusinfo = await conn.query("SELECT * FROM admin where admin_id = ?;", [
-      customer_id
-    ])
-    res.json({ cusinfo: cusinfo[0][0],role:req.user.type })
+        await conn.query(
+          "UPDATE admin SET admin_img = ? WHERE admin_id = ?;",
+          [file.path.substr(6), customer_id])
+      }
+      if (fname) {
+        await conn.query(
+          "UPDATE admin SET admin_fname = ? WHERE admin_id = ?;",
+          [fname, customer_id])
+      }
+      if (lname) {
+        await conn.query(
+          "UPDATE admin SET admin_lname = ? WHERE admin_id = ?;",
+          [lname, customer_id])
+      }
+      if (phonenum) {
+        await conn.query(
+          "UPDATE admin SET admin_phone = ? WHERE admin_id = ?;",
+          [phonenum, customer_id])
+      }
+      let cusinfo = await conn.query("SELECT * FROM admin where admin_id = ?;", [
+        customer_id
+      ])
+      res.json({ cusinfo: cusinfo[0][0], role: req.user.type })
     }
     conn.commit()
-   
+
   } catch (error) {
     await conn.rollback();
     return next(error)
@@ -155,6 +146,130 @@ router.put('/NewUser', isLoggedIn, upload.single('profile_img'), async (req, res
     conn.release();
   }
 });
+
+
+
+
+
+
+const checkPassSchema = Joi.object({
+  email: Joi.string().required().email(),
+  password: Joi.string().required()
+})
+
+
+router.post('/checkPass', async function (req, res, next) {
+  try {
+    await checkPassSchema.validateAsync(req.body, { abortEarly: false })
+  } catch (err) {
+    return res.status(400).send(err)
+  }
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const conn = await pool.getConnection()
+  // Begin transaction
+  await conn.beginTransaction();
+  try {
+    const results = await conn.query(
+      "SELECT * from customer where email = ?;",
+      [email]
+    );
+    const results2 = await conn.query(
+      "SELECT * from admin where admin_email = ?;",
+      [email]
+    );
+
+    if (results[0].length != 0) {
+      if (!(await argon2.verify(results[0][0].password, password))) {
+        throw new Error('Invalid Password')
+      }
+      results[0][0].type = 'customer'
+      const val = { result: results[0], bool: true }
+      res.json(val)
+    }
+    else if (results2[0].length != 0) {
+
+      if (!(await argon2.verify(results2[0][0].admin_password, password))) {
+        throw new Error('Invalid Password')
+      }
+      results2[0][0].type = 'admin'
+      const val2 = { result: results2[0], bool: true }
+      res.json(val2)
+    } else {
+      throw new Error(error)
+    }
+  } catch (err) {
+    res.status(401).json("Invalid Password")
+  }
+
+});
+
+
+
+
+
+const checkEmailSchema = Joi.object({
+  email: Joi.string().required().email(),
+  customer_id: Joi.required()
+})
+
+
+router.put('/NewEmail', isLoggedIn, async (req, res, next) => {
+
+  try {
+    await checkEmailSchema.validateAsync(req.body, { abortEarly: false })
+  } catch (err) {
+    return res.status(400).send(err)
+  }
+
+  const conn = await pool.getConnection()
+  await conn.beginTransaction();
+  const email = req.body.email
+  const customer_id = req.body.customer_id
+
+  try {
+    if (req.user.type == 'customer') {
+      if (email) {
+        await conn.query(
+          "UPDATE Customer SET email = ? WHERE customer_id = ?;",
+          [email, customer_id])
+      }
+      let cusinfo = await conn.query("SELECT * FROM Customer where customer_id = ?;", [
+        customer_id
+      ])
+      res.json({ cusinfo: cusinfo[0][0], role: req.user.type })
+    }
+    if (req.user.type == 'admin') {
+      if (email) {
+        await conn.query(
+          "UPDATE admin SET admin_email = ? WHERE admin_id = ?;",
+          [email, customer_id])
+      }
+      let cusinfo = await conn.query("SELECT * FROM admin where admin_id = ?;", [
+        customer_id
+      ])
+      res.json({ cusinfo: cusinfo[0][0], role: req.user.type })
+    }
+    conn.commit()
+
+  } catch (error) {
+    await conn.rollback();
+    return next(error)
+  } finally {
+    console.log('finally')
+    conn.release();
+  }
+});
+
+
+
+
+
+
+
+
+
 router.post("/Addbook", isLoggedIn, upload.single('book_img'), async function (req, res, next) {
   const conn = await pool.getConnection()
   await conn.beginTransaction();
@@ -189,7 +304,7 @@ router.post("/Addbook", isLoggedIn, upload.single('book_img'), async function (r
       let pubid = await conn.query(
         "SELECT publisher_id FROM Publisher where publisher_name = ?;", [
         publisher_name])
-      
+
       pubid = pubid[0][0]
       if (!pubid) { //นี่คือไม่มีpublisherเลยadd
         let newpub = await conn.query(
@@ -251,7 +366,7 @@ router.get("/book", async function (req, res, next) {
       "SELECT * FROM Author;"
     )
     res.send({ book: book[0], customerH: user[0], customer: cus[0], author: author[0] })
-    
+
   } catch (error) {
     next(error)
   }

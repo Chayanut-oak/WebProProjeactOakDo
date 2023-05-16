@@ -28,6 +28,7 @@ export default  createStore({
         },logout(state){
             state.id ="";
             state.token="";
+            localStorage.removeItem('email')
             localStorage.removeItem('token')
             localStorage.removeItem('cart')
             localStorage.removeItem('id')

@@ -44,7 +44,7 @@ router.post('/SignIn', async function (req, res, next) {
 
     if (results[0].length != 0) {
       if (!(await argon2.verify(results[0][0].password, password))) {
-        throw new Error('Invalid Email or Passwordss')
+        throw new Error('Invalid Email or Password')
       }
       results[0][0].type = 'customer'
       
@@ -66,7 +66,9 @@ router.post('/SignIn', async function (req, res, next) {
       res.json(val)
     }
     else if (results2[0].length != 0) {
-      
+      if (!(await argon2.verify(results2[0][0].admin_password, password))) {
+        throw new Error('Invalid Email or Password')
+      }
      
       results2[0][0].type = 'admin'
       const [tokens] = await conn.query(
@@ -224,6 +226,8 @@ router.get('/user/me', isLoggedIn, async (req, res, next) => {
 // router.put('/comments/addlike/:commentId', function (req, res, next) {
 //   return
 // });
+
+
 
 
 exports.router = router

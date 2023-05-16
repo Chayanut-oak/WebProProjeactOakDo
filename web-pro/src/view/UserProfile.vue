@@ -43,63 +43,70 @@
                         <!-- About Section -->
 
                         <div class="bg-white p-3 shadow-sm rounded-sm">
-                            
-                                <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
-                                    <span clas="text-green-500">
-                                        <svg class="h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                    </span>
-                                    <span class="tracking-wide">About</span>
+
+                            <div class="flex items-center space-x-2 font-semibold text-gray-900 leading-8">
+                                <span clas="text-green-500">
+                                    <svg class="h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </span>
+                                <span class="tracking-wide">About</span>
+                            </div>
+
+                            <div class="text-gray-700">
+                                <div v-if="this.type == 'customer'" class="flex">
+                                    <div class="px-2 py-2 font-semibold">Customer ID:</div>
+                                    <div class="px-2 py-2">{{ cusid }}</div>
                                 </div>
-
-                                <div class="text-gray-700">
-                                    <div v-if="this.type == 'customer'" class="flex">
-                                        <div class="px-2 py-2 font-semibold">Customer ID:</div>
-                                        <div class="px-2 py-2">{{ cusid }}</div>
-                                    </div>
-                                    <div v-if="this.type == 'admin'"  class="flex">
-                                        <div class="px-2 py-2 font-semibold">Admin ID:</div>
-                                        <div class="px-2 py-2">{{ cusid }}</div>
-                                    </div>
-                                    <div class="grid md:grid-cols-2 text-l">
-
-                                        <div class="grid grid-cols-2">
-                                            <div class="py-2 font-semibold">First Name:</div>
-                                            <div class="">{{ cusfname }}</div>
-                                            <input v-model="fname" v-show="editform" type="text" name="fname"
-                                                placeholder="New first name">
-                                        </div>
-                                        <div class="grid grid-cols-2">
-                                            <div class="py-2 font-semibold">Last Name:</div>
-                                            <div class="">{{ cuslname }}</div>
-                                            <input v-model="lname" v-show="editform" type="text" name="lname"
-                                                placeholder="New last name">
-                                        </div>
-                                        <div class="grid grid-cols-2">
-                                            <div class="py-2 font-semibold">Contact No:</div>
-                                            <div class="">{{ cusphone_num }}</div>
-                                            <input v-model="numphone" v-show="editform" type="text" name="numphone"
-                                                placeholder="New phone number">
-                                        </div>
-                                        <div class="grid grid-cols-2">
-                                            <div class="py-2 font-semibold">Email:</div>
-                                            <div class="py-2">
-                                                {{ cusemail }}
-                                            </div>
-                                            <input v-model="newemail" v-show="editform" type="text" name="email"
-                                                placeholder="New Email">
-                                        </div>
-
-                                    </div>
-                                    <button v-if="editform" v-on:click="submit()"
-                                        class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">Confirm
-                                        new information</button>
+                                <div v-if="this.type == 'admin'" class="flex">
+                                    <div class="px-2 py-2 font-semibold">Admin ID:</div>
+                                    <div class="px-2 py-2">{{ cusid }}</div>
                                 </div>
+                                <div class="grid md:grid-cols-2 text-l">
 
-                            
+                                    <div class="grid grid-cols-2">
+                                        <div class="py-2 font-semibold">First Name:</div>
+                                        <div class="">{{ cusfname }}</div>
+                                        <input v-model="fname" v-show="editform" type="text" name="fname"
+                                            placeholder="New first name">
+                                    </div>
+                                    <div class="grid grid-cols-2">
+                                        <div class="py-2 font-semibold">Last Name:</div>
+                                        <div class="">{{ cuslname }}</div>
+                                        <input v-model="lname" v-show="editform" type="text" name="lname"
+                                            placeholder="New last name">
+                                    </div>
+                                    <div class="grid grid-cols-2">
+                                        <div class="py-2 font-semibold">Contact No:</div>
+                                        <div class="">{{ cusphone_num }}</div>
+                                        <input v-model="numphone" v-show="editform" type="text" name="numphone"
+                                            placeholder="New phone number">
+                                    </div>
+                                    <div class="grid grid-cols-2">
+                                        <div class="py-2 font-semibold">Email:</div>
+                                        <div class="py-2">
+                                            {{ cusemail }}
+                                            <button @click="changeEmailModal = true , checkpass = true"><svg xmlns="http://www.w3.org/2000/svg"
+                                                    width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round" class="feather feather-settings">
+                                                    <circle cx="12" cy="12" r="3"></circle>
+                                                    <path
+                                                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                                                    </path>
+                                                </svg></button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <button v-if="editform" v-on:click="submit()" @click='editform = !editform'
+                                    class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">Confirm
+                                    new information</button>
+                            </div>
+
+
                             <button v-on:click="editform = !editform" @click='Editform(item)'
                                 class="block w-full text-blue-800 text-sm font-semibold rounded-lg hover:bg-gray-100 focus:outline-none focus:shadow-outline focus:bg-gray-100 hover:shadow-xs p-3 my-4">Edit
                                 Profile</button>
@@ -107,6 +114,88 @@
 
 
                         <!-- End of about section -->
+
+
+
+
+
+
+
+
+
+
+                        <div class="fixed z-10 inset-0 overflow-y-auto" v-show="changeEmailModal">
+                            <div
+                                class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <!-- Background overlay -->
+                                <div class="fixed inset-0 transition-opacity">
+                                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                                </div>
+
+                                <!-- Modal panel -->
+
+                                <div class="center inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                                    role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                                    <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
+                                        <button @click="changeEmailModal = false, checkpass = false, emailinput = false"
+                                            class="float-right m-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="30"
+                                                height="30" id="close">
+                                                <path fill="#F94646"
+                                                    d="M40 3H24C12.4 3 3 12.4 3 24v16c0 11.6 9.4 21 21 21h16c11.6 0 21-9.4 21-21V24c0-11.6-9.4-21-21-21z">
+                                                </path>
+                                                <path fill="#E2E2E2"
+                                                    d="M36.8 32 48 20.8c.6-.6 1-1.5 1-2.4 0-.9-.4-1.8-1-2.4-1.3-1.3-3.5-1.3-4.8 0L32 27.2 20.8 16c-1.3-1.3-3.5-1.3-4.8 0-.6.6-1 1.5-1 2.4 0 .9.4 1.8 1 2.4L27.2 32 16 43.2c-.6.6-1 1.5-1 2.4s.4 1.8 1 2.4c.6.6 1.5 1 2.4 1 .9 0 1.8-.4 2.4-1L32 36.8 43.2 48c1.3 1.3 3.5 1.3 4.8 0 .6-.6 1-1.5 1-2.4 0-.9-.4-1.8-1-2.4L36.8 32z">
+                                                </path>
+                                            </svg>
+                                            
+                                        </button>
+                                            <div v-show="checkpass" class="w-full sm:max-w-md p-5 mx-auto">
+                                                <div class="mb-4">
+                                                    <label class="block mb-1" for="password">Password</label>
+                                                    <input v-model="pass" id="password" type="password" name="password"
+                                                        class="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block w-full" />
+                                                </div>
+
+
+                                                <div class="mt-6">
+                                                    <button @click="checkPassToEmail()"
+                                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Confirm Password to Change Email</button>
+                                                </div>
+
+                                        </div>
+                                        <div v-show="emailinput" class="w-full sm:max-w-md p-5 mx-auto">
+
+                                                <div class="mb-4">
+                                                    <label class="block mb-1" for="newemail">New Email</label>
+                                                    <input v-model="newemail" type="text" name="newemail"
+                                                        class="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block w-full" />
+                                                </div>
+
+                                                <div class="mt-6">
+                                                    <button v-on:click="changeEmail() " @click="changeEmailModal = false, emailinput = false"
+                                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Change Email</button>
+                                                </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                         <div class="my-4"></div>
 
@@ -202,7 +291,11 @@ export default {
             cusemail: null,
             type: null,
             admininfo: null,
-            navbar_reload: 0
+            navbar_reload: 0,
+            changeEmailModal: false,
+            pass: "",
+            checkpass: false,
+            emailinput: false,
         };
     }, methods: {
         logout() {
@@ -262,36 +355,94 @@ export default {
                 .then((response) => {
                     this.type = response.data.role
                     if (this.type == 'customer') {
-                         this.customer_info = response.data.cusinfo;
-                    this.img = this.customer_info.customer_img
-                    this.cusid = this.customer_info.customer_id
-                    this.cusfname = this.customer_info.fname
-                    this.cuslname = this.customer_info.lname
-                    this.cusphone_num = this.customer_info.phone_num
-                    this.cusemail = this.customer_info.email
-                    this.navbar_reload++
+                        this.customer_info = response.data.cusinfo;
+                        this.img = this.customer_info.customer_img
+                        this.cusid = this.customer_info.customer_id
+                        this.cusfname = this.customer_info.fname
+                        this.cuslname = this.customer_info.lname
+                        this.cusphone_num = this.customer_info.phone_num
+                        this.cusemail = this.customer_info.email
+                        this.navbar_reload++
                     }
                     else if (this.type == 'admin') {
-                    this.admininfo = response.data.cusinfo
-                    this.img = response.data.cusinfo.admin_img
-                    this.cusid = response.data.cusinfo.admin_id
-                    this.cusfname = response.data.cusinfo.admin_fname
-                    this.cuslname = response.data.cusinfo.admin_lname
-                    this.cusphone_num = response.data.cusinfo.admin_phone
-                    this.cusemail = response.data.cusinfo.admin_email
-                    this.navbar_reload++
-                }
-                   
-                    
+                        this.admininfo = response.data.cusinfo
+                        this.img = response.data.cusinfo.admin_img
+                        this.cusid = response.data.cusinfo.admin_id
+                        this.cusfname = response.data.cusinfo.admin_fname
+                        this.cuslname = response.data.cusinfo.admin_lname
+                        this.cusphone_num = response.data.cusinfo.admin_phone
+                        this.cusemail = response.data.cusinfo.admin_email
+                        this.navbar_reload++
+                    }
+
+
                 })
                 .catch((error) => {
                     alert(error.response.data)
                 });
-               
+
 
         },
-    }, created() {
-        
+
+        checkPassToEmail() {
+            console.log(this.cusemail)
+            console.log(this.pass)
+            var formData = new FormData();
+            formData.append("email", this.cusemail);
+            formData.append("password", this.pass);
+            axios
+                .post("http://localhost:3000/checkpass", formData, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                .then((response) => {
+                    console.log(response.data)
+                    this.emailinput = response.data.bool
+                    this.checkpass = false
+                })
+                .catch((error) => {
+                    alert(error.response.data)
+                });
+
+
+        },
+        changeEmail() {
+            console.log("changeEmail")
+            var formData = new FormData();
+            formData.append("email", this.newemail);
+            formData.append("customer_id", this.cusid);
+            axios
+                .put("http://localhost:3000/NewEmail", formData, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                .then((response) => {
+                    this.type = response.data.role
+                    if (this.type == 'customer') {
+                        console.log(response.data)
+                        this.cusid = response.data.cusinfo.customer_id
+                        this.cusemail = response.data.cusinfo.email
+                        this.navbar_reload++
+                    }
+                    else if (this.type == 'admin') {
+
+                        this.cusid = response.data.cusinfo.admin_id
+                        this.cusemail = response.data.cusinfo.admin_email
+                        this.navbar_reload++
+                    }
+                })
+                .catch((error) => {
+                    alert(error.response.data)
+                });
+
+
+        },
+    },
+    
+    created() {
+
 
         if (localStorage.cart == undefined) {
             this.cart = [];
@@ -324,15 +475,15 @@ export default {
                     this.cusphone_num = response.data.admin_info.admin_phone
                     this.cusemail = response.data.admin_info.admin_email
                 }
-                console.log( this.admininfo);
+                console.log(this.admininfo);
 
             })
             .catch((err) => {
                 console.log(err);
                 console.log(this.customer_info);
             });
-            console.log(this.customer_info);
-          
+        console.log(this.customer_info);
+
 
     }
 };

@@ -6,6 +6,7 @@ import SignUpPage from '@/view/SignUpPage.vue';
 import CheckOutPage from '@/view/CheckOutPage.vue';
 import UserProfile from '@/view/UserProfile.vue';
 import AddMin from '@/view/AddMin.vue';
+import ResetPassword from '@/view/ResetPassword.vue';
 
 const routes = [
     {
@@ -56,6 +57,12 @@ const routes = [
         path: '/UserProfile',
         name: 'UserProfile',
         component: UserProfile,
+        
+    },
+    {
+        path: '/ResetPassword',
+        name: 'ResetPassword',
+        component: ResetPassword,
         
     },
 ]

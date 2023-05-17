@@ -203,6 +203,7 @@ router.post('/checkmail', async (req, res, next) => {
   const conn = await pool.getConnection()
   await conn.beginTransaction();
   email = req.body.email
+  console.log(email)
    try {
     let results = await conn.query(
       "SELECT email from Customer where email = ? ;",
@@ -220,7 +221,7 @@ router.post('/checkmail', async (req, res, next) => {
         from: 'chayanut.oakley@gmail.com',
         to: req.body.email,
         subject: 'link to change new password.',
-        text: 'http://localhost:8080/SignUp'
+        text: 'http://localhost:8080/ResetPassword'
       };
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
@@ -258,6 +259,69 @@ router.post('/checkmail', async (req, res, next) => {
 // router.put('/comments/addlike/:commentId', function (req, res, next) {
 //   return
 // });
+
+const newPassSchema = Joi.object({
+  email: Joi.string().required().email(),
+  password: Joi.string().required().custom(passwordValidator),
+  conpassword: Joi.string().required().valid(Joi.ref('password')),
+})
+
+
+router.post('/resetPass', async function (req, res, next) {
+  try {
+    await newPassSchema.validateAsync(req.body, { abortEarly: false })
+  } catch (err) {
+    return res.status(400).send(err)
+  }
+  const email = req.body.email;
+  const password = await argon2.hash(req.body.password);
+  const conpassword = req.body.conpassword;
+
+  const conn = await pool.getConnection()
+  // Begin transaction
+  await conn.beginTransaction();
+  try {
+    const results = await conn.query(
+      "SELECT * from customer where email = ?;",
+      [email]
+    );
+    const results2 = await conn.query(
+      "SELECT * from admin where admin_email = ?;",
+      [email]
+    );
+    if (results[0].length != 0) {
+      if (email) {
+        await conn.query(
+          "UPDATE Customer SET password = ? WHERE email = ?;",
+          [password ,email])
+      }
+      else{
+        next(error)
+      }
+      res.json("Reset Password Success")
+    }
+    if (results2[0].length != 0) {
+      if (email) {
+        await conn.query(
+          "UPDATE admin SET admin_password = ? WHERE admin_email = ?;",
+          [password ,email])
+      }
+      res.json("Reset Password Success")
+    }
+    else{
+      next(error)
+    }
+    conn.commit()
+
+  } catch (error) {
+    await conn.rollback();
+    res.status(401).json("Invalid Password")
+  } finally {
+    console.log('finally')
+    conn.release();
+  }
+
+});
 
 
 

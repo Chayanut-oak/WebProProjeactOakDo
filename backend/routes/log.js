@@ -5,6 +5,7 @@ const Joi = require('joi')
 const argon2 = require('argon2');
 const { generateToken } = require("../utils/token");
 const { isLoggedIn } = require('../middlewares')
+var nodemailer = require('nodemailer');
 
 
 router = express.Router();
@@ -198,6 +199,46 @@ router.get('/user/me', isLoggedIn, async (req, res, next) => {
   
 })
 
+router.post('/checkmail', async (req, res, next) => {
+  const conn = await pool.getConnection()
+  await conn.beginTransaction();
+  email = req.body.email
+   try {
+    let results = await conn.query(
+      "SELECT email from Customer where email = ? ;",
+      [email]
+    ); 
+    if(results[0].length != 0){
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'chayanut.oakley@gmail.com',
+          pass: 'pwjgacchalvrhwwl'
+        }
+      });
+      var mailOptions = {
+        from: 'chayanut.oakley@gmail.com',
+        to: req.body.email,
+        subject: 'link to change new password.',
+        text: 'http://localhost:8080/SignUp'
+      };
+      transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+          res.status(400).send("error")
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.send("success")
+        }
+      
+      });
+    }
+   } catch (err) {
+    next(error)
+   }
+ 
+  
+})
 // // Create new comment
 // router.post('/:blogId/comments', function (req, res, next) {
 //   return

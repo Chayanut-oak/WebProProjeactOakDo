@@ -354,7 +354,7 @@ router.get("/book", async function (req, res, next) {
 
   try {
     let book = await pool.query(
-      "SELECT b.* ,c.*,a.* ,t.* FROM Books b  JOIN publisher c USING(publisher_id) join book_author USING(isbn) join Author a using(author_id) join book_type using(isbn) join Type t using(type_id);"
+      "SELECT distinct b.* ,c.*,a.* ,t.* FROM Books b  JOIN publisher c USING(publisher_id) join book_author USING(isbn) join Author a using(author_id) join book_type using(isbn) join Type t using(type_id);"
     )
     let user = await pool.query(
       "SELECT c.customer_id, c.fname, c.lname, c.email, c.start_membership, bo.order_id,bo.date_of_borrow ,bo.end_of_date ,bol.order_line_id,bol.isbn,bol.status FROM Customer c join book_order bo using (customer_id) left join book_order_line bol using(order_id);"
@@ -471,7 +471,7 @@ router.put("/update", isLoggedIn, upload.single('newbook_img'), async function (
       authorid, isbn
     ]);
     let book = await conn.query(
-      "SELECT b.* ,c.*,a.* ,t.* FROM Books b  JOIN publisher c USING(publisher_id) join book_author USING(isbn) join Author a using(author_id) join book_type using(isbn) join Type t using(type_id);"
+      "SELECT distinct b.* ,c.*,a.* ,t.* FROM Books b  JOIN publisher c USING(publisher_id) join book_author USING(isbn) join Author a using(author_id) join book_type using(isbn) join Type t using(type_id);"
     )
     res.send(book[0])
     conn.commit()

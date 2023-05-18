@@ -4,7 +4,9 @@ const pool = require("../config");
 const Joi = require('joi')
 const argon2 = require('argon2');
 const { generateToken } = require("../utils/token");
-const { isLoggedIn } = require('../middlewares')
+const { isLoggedIn } = require('../middlewares/index.js')
+const { generateOTP } = require('../middlewares/otp.js')
+
 var nodemailer = require('nodemailer');
 
 
@@ -209,11 +211,29 @@ router.post('/checkmail', async (req, res, next) => {
       "SELECT * from Customer where email = ? ;",
       [email]
     );
-    let results2 = await conn.query(
+    if(results[0].length != 0){
+       var results2 = await conn.query(
       "SELECT * from customer_token where customer_id = ? ;",
       [results[0][0].customer_id]
     );
-    if (results[0].length != 0) {
+    }else{
+      var results2 = [[]]
+    }
+   console.log(results2)
+    let results3 = await conn.query(
+      "SELECT * from admin where admin_email = ? ;",
+      [email]
+    );
+    if(results3[0].length !=  0){
+      var results4 = await conn.query(
+      "SELECT * from admin_token where admin_id = ? ;",
+      [results3[0][0].admin_id]
+    );
+    }else{
+      var results4 = [[]]
+    }
+ 
+    if (results2[0].length != 0 ) {
       var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -226,6 +246,38 @@ router.post('/checkmail', async (req, res, next) => {
       let newtoken = await conn.query(
         "update customer_token set token = ? where token = ? ;",
         [token, results2[0][0].token]
+      );
+      var mailOptions = {
+        from: 'chayanut.oakley@gmail.com',
+        to: req.body.email,
+        subject: 'link to change new password.',
+        text: 'http://localhost:8080/resetPass/' + token
+      };
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+          res.status(400).send("error")
+        } else {
+          console.log('Email sent: ' + info.response);
+          res.send('sucess')
+        }
+
+      });
+
+      conn.commit()
+    }else if (results4[0].length != 0) {
+      var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'chayanut.oakley@gmail.com',
+          pass: 'pwjgacchalvrhwwl'
+        }
+      });
+      token = generateToken()
+
+      let newtoken = await conn.query(
+        "update admin_token set token = ? where token = ? ;",
+        [token, results4[0][0].token]
       );
       var mailOptions = {
         from: 'chayanut.oakley@gmail.com',
@@ -307,12 +359,16 @@ router.put('/resetPass/:token', async function (req, res, next) {
         "SELECT * from customer where customer_id = ?;",
         [results0[0][0].customer_id]
       );
+    }else{
+      var results = [[]]
     }
     if (results01[0].length != 0) {
       var results2 = await conn.query(
         "SELECT * from admin where admin_id = ?;",
         [results01[0][0].admin_id]
       );
+    }else{
+      var results2 = [[]]
     }
    
     if (results[0].length != 0) {

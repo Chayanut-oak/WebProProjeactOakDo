@@ -52,7 +52,7 @@
               ADD TO CART
             </button>
             <button v-else 
-              class="bg-orange-200  text-black font-semibold py-2 px-4 rounded w-full">
+              class="bg-black text-white font-semibold py-2 px-4 rounded w-full">
               OUT OF STOCK
             </button>
           </div>

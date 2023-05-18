@@ -1,6 +1,6 @@
 <template>
     <div>
-        <NavBar :cart = "cart" :clearCart = "clearCart" :logout = "logout" />
+        <NavBar :cart="cart" :clearCart="clearCart" :logout="logout" />
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
             integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -26,7 +26,7 @@
                     <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
                         role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                         <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
-                            <button @click="cusModal = false ,order_line = null" class="float-right m-auto"> <svg
+                            <button @click="cusModal = false, order_line = null" class="float-right m-auto"> <svg
                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="30" height="30"
                                     id="close">
                                     <path fill="#F94646"
@@ -172,63 +172,92 @@
 
 
 
-                            <form @submit.prevent="submit">
-                                <label for="isbn">ISBN:</label>
-                                <input type="text" class="border border-grey-light w-full  rounded mb-4" id="isbn"
-                                    v-model="isbn" required><br>
+                            <Form @submit.prevent="submit">
+                                <div class="mb4">
+                                    <label for="isbn">ISBN:</label>
+                                    <Field name="isbn" type="text" class="border border-grey-light w-full  rounded"
+                                        id="isbn" v-model="isbn" required :rules="validateISBN" />
+                                    <ErrorMessage class="text-red-600" name="isbn" />
+                                    <br>
+                                </div>
 
+                                <div class="mb4">
+                                    <label for="book_name">Book Name:</label>
+                                    <Field name="book_name" type="text" class="border border-grey-light w-full  rounded"
+                                        id="book_name" v-model="book_name" required :rules="validateBookName" />
+                                    <ErrorMessage class="text-red-600" name="book_name" /><br>
+                                </div>
+                                <div class="mb4">
+                                    <label for="author">Author Name:</label>
+                                    <Field as="select" name="author" v-model="author" :rules="validateAuthorName">
+                                        <option selected value="None">None</option>
+                                        <option v-for="item in authors" :key="item.author_id" :value="item.author_name">
+                                            {{ item.author_name }}</option>
+                                    </Field>
+                                    <ErrorMessage class="text-red-600" name="author" /><br>
+                                </div>
 
-                                <label for="book_name">Book Name:</label>
-                                <input type="text" class="border border-grey-light w-full  rounded mb-4" id="book_name"
-                                    v-model="book_name" required><br>
+                                <div class="mb4">
+                                    <label for="alias">Author alias:</label>
+                                    <Field name="alias" type="text" class="border border-grey-light w-full  rounded "
+                                        id="book_name" v-model="alias"  />
+                                </div>
+                                <div class="mb4">
+                                    <label for="book_desc">Book Description:</label>
+                                    <Field name="book_desc" type="text" class="border border-grey-light w-full  rounded "
+                                        id="book_desc" v-model="book_desc" required :rules="validateBookDesc" />
+                                    <ErrorMessage class="text-red-600" name="book_desc" /><br>
+                                </div>
+                                <div class="mb4">
+                                    <label for="published_date">Published Date:</label>
+                                    <Field name="published_date" type="date"
+                                        class="border border-grey-light w-full  rounded " id="published_date"
+                                        v-model="published_date" required :rules="validatePublishedDate" />
+                                    <ErrorMessage class="text-red-600" name="published_date" />
+                                    <br>
+                                </div>
 
-                                <label for="author">Author Name:</label>
-                                <select v-model="author" >
-                                    <option selected value="None">None</option>
-                                    <option  v-for="item in authors" :key="item.author_id" :value="item.author_name">{{item.author_name}}</option>
-                                </select><br>
+                                <div class="mb4">
+                                    <label for="publisher_name">Publisher Name:</label>
+                                    <Field name="publisher_name" type="text"
+                                        class="border border-grey-light w-full  rounded" id="publisher_id"
+                                        v-model="publisher_name" required :rules="validatePublisherName" />
+                                    <ErrorMessage class="text-red-600" name="publisher_name" />
+                                    <br>
+                                </div>
 
+                                <div class="mb4">
+                                    <label for="book_stock">Book Stock:</label>
+                                    <Field name="book_stock" type="number" class="border border-grey-light w-full  rounded"
+                                        id="book_stock" v-model="book_stock" required :rules="validateBookStock" /><br>
+                                        <ErrorMessage class="text-red-600" name="book_stock" />
+                                </div>
+                                <div class="mb4">
+                                    <label for="type">Book Type:</label>
+                                    <Field as="select" name="type" v-model="type" :rules="validateBookType">
+                                        <option selected value="None">None</option>
+                                        <option value="Fiction">Fiction</option>
+                                        <option value="Non-Fiction">Non-Fiction</option>
+                                        <option value="Art">Art</option>
+                                        <option value="Biography">Biography</option>
+                                        <option value="Business">Business</option>
+                                        <option value="History">History</option>
+                                        <option value="Medicine">Medicine</option>
+                                        <option value="Science">Science</option>
+                                        <option value="Sports">Sports</option>
+                                        <option value="Travel">Travel</option>
+                                    </Field>
+                                    <ErrorMessage class="text-red-600" name="type" />
+                                </div>
 
-                                <label for="alias">Author alias:</label>
-                                <input type="text" class="border border-grey-light w-full  rounded mb-4" id="book_name"
-                                    v-model="alias"><br>
-
-                                <label for="book_desc">Book Description:</label>
-                                <input type="text" class="border border-grey-light w-full  rounded mb-4" id="book_desc"
-                                    v-model="book_desc" required><br>
-
-                                <label for="published_date">Published Date:</label>
-                                <input type="date" class="border border-grey-light w-full  rounded mb-4" id="published_date"
-                                    v-model="published_date" required><br>
-
-
-                                <label for="publisher_name">Publisher Name:</label>
-                                <input type="text" class="border border-grey-light w-full  rounded mb-4" id="publisher_id"
-                                    v-model="publisher_name" required><br>
-
-                                <label for="book_stock">Book Stock:</label>
-                                <input type="number" class="border border-grey-light w-full  rounded mb-4" id="book_stock"
-                                    v-model="book_stock" required><br>
-                                <label for="">Book Type:</label>
-                                <select v-model="type">
-                                    <option selected value="None">None</option>
-                                    <option value="Fiction">Fiction</option>
-                                    <option value="Non-Fiction">Non-Fiction</option>
-                                    <option value="Art">Art</option>
-                                    <option value="Biography">Biography</option>
-                                    <option value="Business">Business</option>
-                                    <option value="History">History</option>
-                                    <option value="Medicine">Medicine</option>
-                                    <option value="Science">Science</option>
-                                    <option value="Sports">Sports</option>
-                                    <option value="Travel">Travel</option>
-                                    
-                                </select>
-                                <div class="flex">
-                                    <label for="book_img">Book_Image: </label>
-                                    <input type="file" class="file-input" id="file-input" ref="file"
-                                        @change="handleFileUpload()">
-                                </div><br>
+                                <div class="mb4">
+                                    <div class="flex">
+                                        <label for="book_img">Book_Image: </label>
+                                        <Field name="book_img" type="file" class="file-input" id="file-input" ref="file"
+                                            @change="handleFileUpload()" :rules="validateBookImg" />
+                                        <ErrorMessage class="text-red-600" name="book_img" />
+                                    </div><br>
+                                </div>
                                 <button v-show="!active" @click="submit()"
                                     class="w-full inline-flex items-center justify-center px-4 py-2 bg-black border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Add
                                     new book</button>
@@ -437,12 +466,16 @@
 }
 </style>
 <script>
+import { Form, Field, ErrorMessage } from 'vee-validate';
 import NavBar from '../components/NavBar.vue'
 import axios from '@/plugins/axios'
 // import swal from 'sweetalert2';
 export default {
     components: {
         NavBar,
+        Form,
+        Field,
+        ErrorMessage
 
     },
     data() {
@@ -468,11 +501,12 @@ export default {
             order_id: null,
             order_line: false,
             cusModal: false,
-            authors:null
+            authors: null
         };
     },
-    methods: {add(){
-        this.oldfile = null
+    methods: {
+        add() {
+            this.oldfile = null
             this.oldisbn = null
             this.isbn = null
             this.book_name = null
@@ -483,7 +517,86 @@ export default {
             this.publisher_name = null
             this.book_stock = null
             this.type = "None"
-    },
+        },
+        validateISBN(value) {
+
+            if (!value) {
+                return 'This field is required';
+            }
+
+            // All is good
+            return true;
+        },
+        validateAuthorName() {
+            if (this.author == "None" ) {
+                return 'This field is required';
+            }
+
+            // All is good
+            return true;
+        },
+        validateBookName(value) {
+
+            if (!value) {
+                return 'This field is required';
+            }
+
+            // All is good
+            return true;
+        },
+        validateBookDesc(value) {
+
+            if (!value) {
+                return 'This field is required';
+            }
+
+            // All is good
+            return true;
+        },
+        validateBookStock(value) {
+
+            if (!value) {
+                return 'This field is required';
+            }
+
+            // All is good
+            return true;
+        },
+        validateBookImg(value) {
+
+            if (!value) {
+                return 'This field is required';
+            }
+
+            // All is good
+            return true;
+        },
+        validatePublishedDate(value) {
+
+            if (!value) {
+                return 'This field is required';
+            }
+
+            // All is good
+            return true;
+        },
+        validatePublisherName(value) {
+
+            if (!value) {
+                return 'This field is required';
+            }
+
+            // All is good
+            return true;
+        },
+        validateBookType() {
+            if (this.type == "None") {
+                return 'This field is required';
+            }
+
+            // All is good
+            return true;
+        },
         getline(item) {
             axios
                 .get("http://localhost:3000/orderline", { params: { order_id: item.order_id } }, {
@@ -657,7 +770,7 @@ export default {
             .catch((error) => {
                 alert(error.response.data)
             });
-            axios
+        axios
             .get("http://localhost:3000/checkbook", { params: { user: this.$store.state.id } })
             .then((response) => {
                 console.log(response.data);
@@ -665,13 +778,13 @@ export default {
             .catch((err) => {
                 console.log(err);
             });
-            axios.get(`http://localhost:3000/user/me`)
+        axios.get(`http://localhost:3000/user/me`)
             .then((response) => {
-               if(response.data.type != "admin"){
-                this.$router.push("/")
-               }
+                if (response.data.type != "admin") {
+                    this.$router.push("/")
+                }
             })
-            .catch((err) => { 
+            .catch((err) => {
                 console.log(err.response.data)
             })
     }

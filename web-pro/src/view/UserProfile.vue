@@ -149,13 +149,9 @@
                                                 </div>
                                                 <div class="mt-6">
                                                     <button @click="checkPassToEmail()"
-                                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Confirm Password to Change Email</button>
+                                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-orange-600 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Confirm Password to Change Email</button>
                                                 </div>
 
-                                                <div class="mt-6">
-                                                    <button @click="checkPassToEmail()"
-                                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Confirm Password to Change Email</button>
-                                                </div>
 
                                         </div>
                                         <div v-show="emailinput" class="w-full sm:max-w-md p-5 mx-auto">
@@ -167,7 +163,7 @@
 
                                                 <div class="mt-6">
                                                     <button v-on:click="changeEmail() " @click="changeEmailModal = false, emailinput = false"
-                                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Change Email</button>
+                                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-orange-600 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Change Email</button>
                                                 </div>
 
                                         </div>

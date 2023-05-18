@@ -18,7 +18,8 @@ export default  createStore({
     getters:{
 
     },
-    mutations:{login2(state,id){
+    mutations:{
+        login2(state,id){
             state.id = id
             localStorage.setItem('id',id);
         },

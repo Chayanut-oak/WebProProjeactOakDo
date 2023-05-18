@@ -88,10 +88,11 @@
                                         <div class="py-2 font-semibold">Email:</div>
                                         <div class="py-2">
                                             {{ cusemail }}
-                                            <button @click="changeEmailModal = true , checkpass = true"><svg xmlns="http://www.w3.org/2000/svg"
-                                                    width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" class="feather feather-settings">
+                                            <button @click="changeEmailModal = true, checkpass = true"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-settings">
                                                     <circle cx="12" cy="12" r="3"></circle>
                                                     <path
                                                         d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
@@ -139,32 +140,42 @@
                                                     d="M36.8 32 48 20.8c.6-.6 1-1.5 1-2.4 0-.9-.4-1.8-1-2.4-1.3-1.3-3.5-1.3-4.8 0L32 27.2 20.8 16c-1.3-1.3-3.5-1.3-4.8 0-.6.6-1 1.5-1 2.4 0 .9.4 1.8 1 2.4L27.2 32 16 43.2c-.6.6-1 1.5-1 2.4s.4 1.8 1 2.4c.6.6 1.5 1 2.4 1 .9 0 1.8-.4 2.4-1L32 36.8 43.2 48c1.3 1.3 3.5 1.3 4.8 0 .6-.6 1-1.5 1-2.4 0-.9-.4-1.8-1-2.4L36.8 32z">
                                                 </path>
                                             </svg>
-                                            
+
                                         </button>
-                                            <div v-show="checkpass" class="w-full sm:max-w-md p-5 mx-auto">
-                                                <div class="mb-4">
-                                                    <label class="block mb-1" for="text">OTP</label>
-                                                    <input v-model="pass" id="text" type="text" name="text"
-                                                        class="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block w-full" />
-                                                </div>
-                                                <div class="mt-6">
-                                                    <button @click="checkPassToEmail()"
-                                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-orange-600 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Confirm Password to Change Email</button>
-                                                </div>
+                                        <div v-show="checkpass" class="w-full sm:max-w-md p-5 mx-auto">
+                                            <div class="mb-4">
+                                                <label class="block mb-1" for="text">OTP</label>
+                                                <input v-model="pass" id="text" type="text" name="text"
+                                                    class="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block w-full" />
+                                            </div>
+                                            <div class="mt-6">
+                                                <button @click="sendOTP()"
+                                                    class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Click
+                                                    here to recieve OTP</button>
+
+
+
+                                                <button @click="checkPassToEmail()"
+                                                    class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Confirm
+                                                    OTP</button>
+
+                                            </div>
 
 
                                         </div>
                                         <div v-show="emailinput" class="w-full sm:max-w-md p-5 mx-auto">
-                                                <div class="mb-4">
-                                                    <label class="block mb-1" for="newemail">New Email</label>
-                                                    <input v-model="newemail" type="text" name="newemail"
-                                                        class="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block w-full" />
-                                                </div>
+                                            <div class="mb-4">
+                                                <label class="block mb-1" for="newemail">New Email</label>
+                                                <input v-model="newemail" type="text" name="newemail"
+                                                    class="py-2 px-3 border border-gray-300 focus:border-red-300 focus:outline-none focus:ring focus:ring-red-200 focus:ring-opacity-50 rounded-md shadow-sm disabled:bg-gray-100 mt-1 block w-full" />
+                                            </div>
 
-                                                <div class="mt-6">
-                                                    <button v-on:click="changeEmail() " @click="changeEmailModal = false, emailinput = false"
-                                                        class="w-full inline-flex items-center justify-center px-4 py-2 bg-orange-500 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-orange-600 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Change Email</button>
-                                                </div>
+                                            <div class="mt-6">
+                                                <button v-on:click="changeEmail()"
+                                                    @click="changeEmailModal = false, emailinput = false"
+                                                    class="w-full inline-flex items-center justify-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Change
+                                                    Email</button>
+                                            </div>
 
                                         </div>
 
@@ -239,7 +250,7 @@
 import NavBar from "../components/NavBar.vue";
 // import booklist from "../components/book.json"
 import axios from '@/plugins/axios'
-
+import swal from 'sweetalert2';
 export default {
 
     name: "App",
@@ -283,7 +294,7 @@ export default {
             this.fname = this.cusfname,
                 this.lname = this.cuslname,
                 this.numphone = this.cusphone_num
-                
+
         }
         ,
 
@@ -361,7 +372,7 @@ export default {
 
         checkPassToEmail() {
             var formData = new FormData();
-            formData.append("email", this.cusemail);
+            formData.append("id", this.cusid);
             formData.append("password", this.pass);
             axios
                 .post("http://localhost:3000/checkpass", formData, {
@@ -370,9 +381,25 @@ export default {
                     },
                 })
                 .then((response) => {
-                    console.log(response.data)
-                    this.emailinput = response.data.bool
-                    this.checkpass = false
+                    if (response.data.status == 'success') {
+                        swal.fire({
+                        icon: 'success',
+                        title: 'You have confirm OTP',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                        this.emailinput = true
+                        this.checkpass = false
+                    }else if(response.data.status == 'fail'){
+                        swal.fire({
+                        icon: 'error',
+                        title: 'Wrong OTP',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    this.pass = ""
+                    }
+
                 })
                 .catch((error) => {
                     alert(error.response.data)
@@ -410,9 +437,33 @@ export default {
                 });
 
 
+        }, sendOTP() {
+            var formData = new FormData();
+            formData.append("email", this.cusemail);
+            formData.append("id", this.cusid);
+            axios
+                .post("http://localhost:3000/otp", formData, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                .then((response) => {
+                    swal.fire({
+                        icon: 'success',
+                        title: 'OTP has been sent!!!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    console.log(response)
+                })
+                .catch((error) => {
+                    alert(error.response.data)
+                });
+
+
         },
     },
-    
+
     created() {
 
 

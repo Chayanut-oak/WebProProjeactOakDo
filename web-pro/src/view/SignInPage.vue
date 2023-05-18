@@ -122,7 +122,6 @@ export default {
             }).then((next) => {
               if (next) {
                 this.id = response.data.result[0].admin_id
-                this.$store.commit('login', this.e)
                 this.$store.commit('login2', this.id)
                 this.$store.commit('token', response.data.token)
                 this.$emit('auth-change')
@@ -137,7 +136,6 @@ export default {
             }).then((next) => {
               if (next) {
                 this.id = response.data.result[0].customer_id
-                this.$store.commit('login', this.e)
                 this.$store.commit('login2', this.id)
                 this.$store.commit('token', response.data.token)
                 this.$emit('auth-change')

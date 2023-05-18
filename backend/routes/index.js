@@ -152,53 +152,51 @@ router.put('/NewUser', isLoggedIn, upload.single('profile_img'), async (req, res
 
 
 
-const checkPassSchema = Joi.object({
-  email: Joi.string().required().email(),
-  password: Joi.string().required()
-})
+
 
 
 router.post('/checkPass', async function (req, res, next) {
-  try {
-    await checkPassSchema.validateAsync(req.body, { abortEarly: false })
-  } catch (err) {
-    return res.status(400).send(err)
-  }
-  const email = req.body.email;
+ 
+  const id = req.body.id;
   const password = req.body.password;
-
   const conn = await pool.getConnection()
   // Begin transaction
   await conn.beginTransaction();
   try {
     const results = await conn.query(
-      "SELECT * from customer where email = ?;",
-      [email]
+      "SELECT * from customer where customer_id = ?;",
+      [id]
     );
     const results2 = await conn.query(
-      "SELECT * from admin where admin_email = ?;",
-      [email]
+      "SELECT * from admin where admin_id = ?;",
+      [id]
     );
 
     if (results[0].length != 0) {
-      if (!(await argon2.verify(results[0][0].password, password))) {
-        throw new Error('Invalid Password')
-      }
-      results[0][0].type = 'customer'
-      const val = { result: results[0], bool: true }
-      res.json(val)
+      var results3 = await conn.query(
+        "SELECT otp from customer where otp = ?;",
+        [password]
+      );
+        if(results3[0].length != 0){
+          res.json({'status':"success"})
+        }else{
+          res.json({'status':"fail"})
+        }
     }
     else if (results2[0].length != 0) {
-
-      if (!(await argon2.verify(results2[0][0].admin_password, password))) {
-        throw new Error('Invalid Password')
-      }
-      results2[0][0].type = 'admin'
-      const val2 = { result: results2[0], bool: true }
-      res.json(val2)
+      var results4 = await conn.query(
+        "SELECT otp from admin where otp = ?;",
+        [password]
+      );
+        if(results4[0].length != 0){
+          res.json({'status':"success"})
+        }else{
+          res.json({'status':"fail"})
+        }
     } else {
       throw new Error(error)
     }
+    conn.commit()
   } catch (err) {
     res.status(401).json("Invalid Password")
   }

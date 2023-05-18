@@ -3,7 +3,7 @@
     <div class="w-full min-h-screen bg-gray-50 flex flex-col sm:justify-center items-center pt-6 sm:pt-0">
         <div class="w-full sm:max-w-md p-5 mx-auto">
             <h2 class="mb-12 text-center text-5xl font-extrabold">Reset Password</h2>
-            <Form>
+           
                 <div class="mb-4">
                     <label class="block mb-1" for="password">New Password</label>
                     <Field v-model="password" id="password" type="password" name="password"
@@ -26,7 +26,7 @@
                         Password</button>
 
                 </div>
-            </Form>
+            
         </div>
 
     </div>

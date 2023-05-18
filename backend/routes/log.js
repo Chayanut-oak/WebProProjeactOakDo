@@ -405,6 +405,64 @@ router.put('/resetPass/:token', async function (req, res, next) {
   }
 
 });
+// Create new comment
+router.post('/otp',async function (req, res, next) {
+  const conn = await pool.getConnection()
+  // Begin transaction
+  await conn.beginTransaction();
+  const email = req.body.email
+try {
+  const  otp = generateOTP()
+  var results2 = await conn.query(
+    "SELECT otp from customer where email = ?;",
+    [email]
+  );
+  var results3 = await conn.query(
+    "SELECT otp from admin where admin_email = ?;",
+    [email]
+  );
+  if(results2[0].length != 0){
+    await conn.query(
+      "UPDATE customer SET otp = ? WHERE email = ?;",
+      [otp, email])
+  }
+  if(results3[0].length != 0){
+    await conn.query(
+      "UPDATE admin SET otp = ? WHERE admin_email = ?;",
+      [otp, email])
+  }
+
+
+  
+    var transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'chayanut.oakley@gmail.com',
+        pass: 'pwjgacchalvrhwwl'
+      }
+    });
+    
+    var mailOptions = {
+      from: 'chayanut.oakley@gmail.com',
+      to: req.body.email,
+      subject: 'OTP password.',
+      text: 'Here, this is your OTP: '+ otp
+    };
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        res.status(400).send("error")
+      } else {
+        console.log('Email sent: ' + info.response);
+        res.send('sucess')
+      }
+
+    });
+    conn.commit()
+} catch (err) {
+  next(err)
+}
+});
 
 
 

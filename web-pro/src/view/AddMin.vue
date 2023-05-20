@@ -190,13 +190,14 @@
                                 <div class="mb4">
                                     <label for="author">Author Name:</label>
                                     <Field as="select" name="author" v-model="author" :rules="validateAuthorName">
-                                        <option selected value="None">None</option>
+                                        <option selected value="None">New Author</option>
                                         <option v-for="item in authors" :key="item.author_id" :value="item.author_name">
                                             {{ item.author_name }}</option>
 
                                     </Field>
                                     <Field name="author" type="text" v-model="author"
                                         class="border border-grey-light w-full  rounded " id="author" />
+
                                     <ErrorMessage class="text-red-600" name="author" /><br>
                                 </div>
 
@@ -222,9 +223,20 @@
 
                                 <div class="mb4">
                                     <label for="publisher_name">Publisher Name:</label>
+
+                                    <Field as="select" name="publisher" v-model="publisher_name" :rules="validatePublisherName">
+                                        <option selected value="None">New publisher</option>
+                                        <option v-for="item in publisher" :key="item.publisher_id"
+                                            :value="item.publisher_name">
+                                            {{ item.publisher_name }}</option>
+
+                                    </Field>
+
                                     <Field name="publisher_name" type="text"
                                         class="border border-grey-light w-full  rounded" id="publisher_id"
                                         v-model="publisher_name" required :rules="validatePublisherName" />
+
+
                                     <ErrorMessage class="text-red-600" name="publisher_name" />
                                     <br>
                                 </div>
@@ -507,7 +519,10 @@ export default {
             order_id: null,
             order_line: false,
             cusModal: false,
-            authors: null
+            authors: null,
+            publisher: "",
+            nonepub: null,
+            noneauthor: null,
         };
     },
     methods: {
@@ -783,6 +798,7 @@ export default {
                 this.customerH = response.data.customerH
                 this.customer = response.data.customer
                 this.authors = response.data.author
+                this.publisher = response.data.publisher
                 console.log(this.customerH)
 
             })

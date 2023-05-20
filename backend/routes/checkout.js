@@ -114,7 +114,7 @@ router.put("/returnBook",isLoggedIn, async function (req, res, next) {
   await conn.beginTransaction();
   const userid = req.body.params.userId
   const isbn = req.body.params.isbn
- 
+ console.log( req.body)
   try {
     let returnBookFromPossession = await conn.query("delete from book_possession where isbn = ? and customer_id = ?",[
       isbn, userid

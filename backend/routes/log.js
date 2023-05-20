@@ -35,6 +35,7 @@ router.post('/SignIn', async function (req, res, next) {
   await conn.beginTransaction();
   const email = req.body.email;
   const password = req.body.password;
+  
   try {
     const results = await conn.query(
       "SELECT * from customer where email = ?;",
@@ -219,7 +220,7 @@ router.post('/checkmail', async (req, res, next) => {
     }else{
       var results2 = [[]]
     }
-   console.log(results2)
+   
     let results3 = await conn.query(
       "SELECT * from admin where admin_email = ? ;",
       [email]
@@ -232,7 +233,7 @@ router.post('/checkmail', async (req, res, next) => {
     }else{
       var results4 = [[]]
     }
- 
+    
     if (results2[0].length != 0 ) {
       var transporter = nodemailer.createTransport({
         service: 'gmail',

@@ -33,6 +33,7 @@ CREATE TABLE Admin (
     admin_email VARCHAR(100),
     admin_img VARCHAR(100),
     start_working DATE,
+    otp VARCHAR(100),
     PRIMARY KEY (admin_id),
     KEY NN (
         admin_password,
@@ -56,6 +57,7 @@ CREATE TABLE Customer (
     address VARCHAR(100),
     customer_img VARCHAR(100),
     start_membership DATE,
+    otp VARCHAR(100),
     PRIMARY KEY (customer_id),
     KEY NN (
         password,
@@ -198,19 +200,6 @@ CREATE TABLE admin_token (
     PRIMARY KEY (id),
     FOREIGN KEY (admin_id) REFERENCES Admin(`admin_id`) on delete cascade on update cascade
 );
-
-INSERT INTO
-    Customer (
-        password,
-        fname,
-        lname,
-        email,
-        phone_num,
-        address,
-        customer_img,
-        start_membership
-    )
-
 INSERT INTO
     Books (
         isbn,

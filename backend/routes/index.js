@@ -281,6 +281,7 @@ router.post("/Addbook", isLoggedIn, upload.single('book_img'), async function (r
   const publisher_name = req.body.publisher_name
   const file = req.file;
   const type = req.body.type;
+  console.log(req.body)
   try {
     let oldisbn = await conn.query(
       "SELECT isbn FROM Books where isbn = ?;", [
@@ -313,12 +314,14 @@ router.post("/Addbook", isLoggedIn, upload.single('book_img'), async function (r
       } else {
         pubid = pubid.publisher_id
       }
-
+      console.log(file.path.substr(6))
       if (file) {
         let newbook = await conn.query(
-          "REPLACE  INTO Books VALUES(?,?,?,?,?,?,?);",
+          "INSERT  INTO Books VALUES(?,?,?,?,?,?,?);",
           [isbn, book_name, file.path.substr(6), book_desc, published_date, pubid, book_stock])
       }
+     
+
       let newbookauthor = await conn.query(
         "INSERT INTO Book_Author(author_id,isbn) values(?,?);", [
         authorid, isbn]
@@ -363,7 +366,10 @@ router.get("/book", async function (req, res, next) {
     let author = await pool.query(
       "SELECT * FROM Author;"
     )
-    res.send({ book: book[0], customerH: user[0], customer: cus[0], author: author[0] })
+    let publisher = await pool.query(
+      "SELECT * FROM publisher;"
+    )
+    res.send({ book: book[0], customerH: user[0], customer: cus[0], author: author[0] ,publisher:publisher[0]})
 
   } catch (error) {
     next(error)
@@ -511,5 +517,41 @@ router.get("/orderline", isLoggedIn, async function (req, res, next) {
     console.log('finally')
   }
 });
+router.get("/history", isLoggedIn, async function (req, res, next) {
+  const conn = await pool.getConnection()
+  await conn.beginTransaction();
+  const token = req.query.token
 
+  try {
+    let results1 = await conn.query("SELECT customer_id FROM customer_token WHERE token = ?;",
+      [token])
+    let results2 = await conn.query("SELECT admin_id FROM admin_token WHERE token = ?;",
+      [token])
+    const adminID = results2[0][0]
+    const cusID = results1[0][0]
+
+    console.log(cusID)
+    if (results1[0].length != 0) {
+      let possession = await conn.query('select book_name, bo., bol. from  books  \
+      join Book_order_line bol using(isbn) join Book_order bo using(order_id) where bo.customer_id = ?', [
+        cusID.customer_id
+      ])
+      console.log(possession[0])
+      return res.json({ possession: possession[0]})
+
+    }
+    if (results2[0].length != 0) {
+      return res.status(404).json({
+        message: 'Must be a customer'
+      })
+    }
+
+    conn.commit()
+  } catch (error) {
+    await conn.rollback();
+    next(error);
+  } finally {
+    conn.release();
+  }
+});
 exports.router = router;

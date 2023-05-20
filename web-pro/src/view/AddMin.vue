@@ -193,14 +193,17 @@
                                         <option selected value="None">None</option>
                                         <option v-for="item in authors" :key="item.author_id" :value="item.author_name">
                                             {{ item.author_name }}</option>
+
                                     </Field>
+                                    <Field name="author" type="text" v-model="author"
+                                        class="border border-grey-light w-full  rounded " id="author" />
                                     <ErrorMessage class="text-red-600" name="author" /><br>
                                 </div>
 
                                 <div class="mb4">
                                     <label for="alias">Author alias:</label>
                                     <Field name="alias" type="text" class="border border-grey-light w-full  rounded "
-                                        id="book_name" v-model="alias"  />
+                                        id="book_name" v-model="alias" />
                                 </div>
                                 <div class="mb4">
                                     <label for="book_desc">Book Description:</label>
@@ -230,7 +233,7 @@
                                     <label for="book_stock">Book Stock:</label>
                                     <Field name="book_stock" type="number" class="border border-grey-light w-full  rounded"
                                         id="book_stock" v-model="book_stock" required :rules="validateBookStock" /><br>
-                                        <ErrorMessage class="text-red-600" name="book_stock" />
+                                    <ErrorMessage class="text-red-600" name="book_stock" />
                                 </div>
                                 <div class="mb4">
                                     <label for="type">Book Type:</label>
@@ -253,8 +256,10 @@
                                 <div class="mb4">
                                     <div class="flex">
                                         <label for="book_img">Book_Image: </label>
-                                        <Field name="book_img" type="file" class="file-input" id="file-input" ref="file"
-                                            @change="handleFileUpload()" :rules="validateBookImg" />
+                                        <Field name="book_img" :rules="validateBookImg">
+                                            <input name="book_img" type="file" class="file-input" id="file-input" ref="file"
+                                                @change="handleFileUpload()" />
+                                        </Field>
                                         <ErrorMessage class="text-red-600" name="book_img" />
                                     </div><br>
                                 </div>
@@ -466,6 +471,7 @@
 }
 </style>
 <script>
+import swal from 'sweetalert2';
 import { Form, Field, ErrorMessage } from 'vee-validate';
 import NavBar from '../components/NavBar.vue'
 import axios from '@/plugins/axios'
@@ -528,7 +534,7 @@ export default {
             return true;
         },
         validateAuthorName() {
-            if (this.author == "None" ) {
+            if (this.author == "None") {
                 return 'This field is required';
             }
 
@@ -562,9 +568,9 @@ export default {
             // All is good
             return true;
         },
-        validateBookImg(value) {
+        validateBookImg() {
 
-            if (!value) {
+            if (this.file.length < 0) {
                 return 'This field is required';
             }
 
@@ -700,6 +706,13 @@ export default {
                     this.books = response.data;
                     // Success! -> redirect to home page
                     console.log(response)
+                    swal.fire({
+                        title: 'Add Book',
+                        text: 'success',
+                        icon: 'success'
+                    })
+                    this.showModal = false
+
                 })
                 .catch((error) => {
                     alert(error.response.data)
@@ -744,6 +757,12 @@ export default {
                     this.type = ""
                     this.active = !this.active
                     this.books = response.data;
+
+                    swal.fire({
+                        title: 'Update Book',
+                        text: 'success',
+                        icon: 'success'
+                    })
                     // Success! -> redirect to home page
                     console.log(response)
                 })

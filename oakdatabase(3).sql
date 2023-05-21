@@ -200,6 +200,7 @@ CREATE TABLE admin_token (
     PRIMARY KEY (id),
     FOREIGN KEY (admin_id) REFERENCES Admin(`admin_id`) on delete cascade on update cascade
 );
+
 INSERT INTO
     Books (
         isbn,
@@ -396,6 +397,8 @@ INSERT INTO Comments (isbn, customer_id, comment, created_when) VALUES
 ('9780061122415', 8, 'The ending was a bit predictable, but still enjoyable overall.', '2023-04-13 11:20:00'),
 ('9780061122415', 2, 'Not my favorite book, but still worth a read.', '2023-04-10 12:00:00');
 
+INSERT INTO admin(admin_id,admin_password,admin_fname,admin_lname,admin_phone,admin_email,start_working) VALUES
+(1,'$argon2id$v=19$m=65536,t=3,p=4$maMJFiRz0vrSrXbcrb+J7w$ffEyeQDG+mD7Sks5lg2g1qTTkjv4kE81Vj3wKUoLzic','Chayanut','Suttayarai','0942340702','64070136@kmitl.ac.th','2023-05-21');
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */
 ;
 

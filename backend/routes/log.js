@@ -206,7 +206,7 @@ router.post('/checkmail', async (req, res, next) => {
   const conn = await pool.getConnection()
   await conn.beginTransaction();
   email = req.body.email
-  console.log(email)
+  
   try {
     let results = await conn.query(
       "SELECT * from Customer where email = ? ;",

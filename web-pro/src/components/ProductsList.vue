@@ -1,6 +1,6 @@
 
 <template>
-  <div class="bg-white">
+  <div class="">
     <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
       <h2 class="sr-only">Products</h2>
       <form class="">
@@ -121,7 +121,7 @@ export default {
       let booklits = this.book
 
       if (this.look != "") {
-        return booklits.filter((x) => (x.book_name.toLowerCase()).includes((this.look).toLowerCase()));
+        return booklits.filter((x) => (x.book_name.toLowerCase().replace(/\s/g, '')).includes((this.look).toLowerCase().replace(/\s/g, '')));
       }
       if (this.picked == "ALL") {
         // console.log(type.filter(x=>x.genre.includes(this.picked)  ))

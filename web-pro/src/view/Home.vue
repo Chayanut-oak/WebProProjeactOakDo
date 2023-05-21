@@ -3,6 +3,7 @@
     <NavBar :cart = "cart" :clearCart = "clearCart" :logout = "logout" />
     <CarouselBar />
     <ProductsList :add= "addToCart" />
+    <MainFooter />
   </div>
 </template>
   
@@ -11,6 +12,7 @@
 import CarouselBar from "../components/CarouselBar";
 import NavBar from "../components/NavBar.vue";
 import ProductsList from "../components/ProductsList.vue";
+import MainFooter from "../components/NewFooter.vue";
 // import booklist from "../components/book.json"
 
 export default {
@@ -19,6 +21,7 @@ export default {
     NavBar,
     CarouselBar,
     ProductsList,
+    MainFooter
   },
   data() {
     return {

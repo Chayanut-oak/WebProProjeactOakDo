@@ -34,7 +34,7 @@
                         <!-- End of profile card -->
                         <div class="my-4"></div>
                         <!-- Friends card -->
-
+                        <MainFooter />
                         <!-- End of friends card -->
                     </div>
                     <!-- Right Side -->
@@ -184,19 +184,6 @@
                             </div>
                         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
                         <div class="fixed z-10 inset-0 overflow-y-auto" v-show="history">
                             <div
                                 class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
@@ -268,22 +255,6 @@
                             </div>
                         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         <div class="my-4"></div>
 
                         <h1 class="text-4xl text-gray-900 font-bold leading-8 my-1 p-2">Your Book</h1>
@@ -324,7 +295,7 @@
                                         </td>
 
                                         <td v-if="item.book_name" class="px-6 py-4 text-right text-gray-900">
-                                            <button href="#"
+                                            <button href="#" @click='read(item)'
                                                 class="text-xl font-medium mx-10 my-1 btn btn-secondary">Read</button>
                                             <button href="#" class="text-xl font-medium mx-10 my-1 btn btn-secondary"
                                                 @click='returnBook(item)'>Return</button>
@@ -333,21 +304,29 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            
                             <footers class="bg-gray-100 w-full h-full">
 
                             </footers>
+                            
                         </div>
 
                         <!-- End of profile tab -->
+                        
                     </div>
+                    
                 </div>
+                
             </div>
+            
         </div>
+        
     </div>
+
 </template>
     
 <script>
-
+import MainFooter from "../components/NewFooter.vue";
 // import axios from "axios";
 import NavBar from "../components/NavBar.vue";
 // import booklist from "../components/book.json"
@@ -358,6 +337,7 @@ export default {
     name: "App",
     components: {
         NavBar,
+        MainFooter
     },
     data() {
         return {
@@ -389,6 +369,13 @@ export default {
             book_history: null,
         };
     }, methods: {
+        read(){
+            swal.fire({
+                            icon: 'error',
+                            title: 'ใจเย็นครับ',
+                            text: 'ไม่มีลิขสิทธิ์ครับอ่านไม่ได้',
+                        })
+        },
         logout() {
             this.$store.commit('logout')
             this.$router.push({ path: "/" });
@@ -401,7 +388,6 @@ export default {
 
         }
         ,
-
         addToCart(products) {
             this.cart.push(products)
             localStorage.setItem("cart", JSON.stringify(this.cart));

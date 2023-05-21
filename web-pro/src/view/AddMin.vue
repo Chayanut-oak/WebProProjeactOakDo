@@ -105,7 +105,9 @@
                                             <th
                                                 class=" px-1 bg-black text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-center text-white ">
                                                 status</th>
-
+                                                <th
+                                                class=" pt-3 px-1 bg-black text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-center text-white ">
+                                                </th>
                                         </tr>
 
                                     </thead>
@@ -122,7 +124,14 @@
                                                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-center">
                                                 {{ item.status }}</td>
 
+                                                <button @click="changeStatus(item)" class="my-3  hover:bg-orange-500 p-1 rounded-md"> <svg
+                                            xmlns="http://www.w3.org/2000/svg" width="20" height="28" id="remove">
+                                            <path fill="#000100"
+                                                d="m12.695 10 6.752-6.752a1.887 1.887 0 0 0 0-2.668L19.42.553a1.887 1.887 0 0 0-2.668 0L10 7.305 3.248.553a1.887 1.887 0 0 0-2.668 0L.553.58a1.887 1.887 0 0 0 0 2.668L7.305 10 .553 16.752a1.887 1.887 0 0 0 0 2.668l.027.027a1.887 1.887 0 0 0 2.668 0L10 12.695l6.752 6.752a1.887 1.887 0 0 0 2.668 0l.027-.027a1.887 1.887 0 0 0 0-2.668L12.695 10z">
 
+
+                                            </path>
+                                        </svg></button>
                                         </tr>
 
                                     </tbody>
@@ -275,7 +284,7 @@
                                         <ErrorMessage class="text-red-600" name="book_img" />
                                     </div><br>
                                 </div>
-                                <button v-show="!active" @click="submit()"
+                                <button v-show="!active" @click="validateForm()"
                                     class="w-full inline-flex items-center justify-center px-4 py-2 bg-black border border-transparent rounded-md font-semibold capitalize text-white hover:bg-red-700 active:bg-red-700 focus:outline-none focus:border-red-700 focus:ring focus:ring-red-200 disabled:opacity-25 transition">Add
                                     new book</button>
 
@@ -524,6 +533,43 @@ export default {
         };
     },
     methods: {
+        validateForm() {
+            let errors = []
+            if (!this.isbn || this.isbn.length != 13) {
+                errors.push('There is somthing wrong with ISBN.');
+            }
+            if (!this.book_name) {
+                errors.push('There is somthing wrong with Book Name.');
+            }
+            if (!this.book_desc) {
+                errors.push('There is somthing wrong with Description.');
+            }
+            if (!this.type) {
+                errors.push('There is somthing wrong with Type.');
+            }
+            if (!this.publisher_name) {
+                errors.push('There is somthing wrong with Publisher.');
+            }
+            if (!this.published_date) {
+                errors.push('There is somthing wrong with Published date .');
+            }
+            if (!this.author) {
+                errors.push('There is somthing wrong with Author.');
+            }
+            if (!this.file && !this.image) {
+                errors.push('Please upload file.');
+            }
+            if (this.book_stock < 0 || !this.book_stock) {
+                errors.push('Amouth of this book is not right.');
+            }
+            if (errors.length) {
+                // Display error messages to user or handle them however you wish
+                alert(errors)
+                return false
+            }
+            // If all fields are valid, submit form
+            this.submit()
+        },
         add() {
             this.oldfile = null
             this.oldisbn = null

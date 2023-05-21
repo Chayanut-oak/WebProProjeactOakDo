@@ -29,8 +29,8 @@ router.get("/checkout",isLoggedIn, async function (req, res, next) {
     ]);
     const orderId = orderid[0].insertId
     book.forEach(async element => {
-      await conn.query("INSERT INTO book_order_line (order_id,isbn,status) VALUES(?,?,?);", [
-        orderId, element.isbn, "Borrowed"]);
+      await conn.query("INSERT INTO book_order_line (order_id,isbn,status,book_name) VALUES(?,?,?,?);", [
+        orderId, element.isbn, "Borrowed",element.book_name]);
 
       await conn.query("UPDATE books set book_stock = book_stock-1  where isbn = ?", [
         element.isbn]);
@@ -125,7 +125,7 @@ router.put("/returnBook",isLoggedIn, async function (req, res, next) {
     let returnStock = await conn.query('update books set book_stock = book_stock+1 where isbn = ?',[
       isbn
     ])
-    let result = await conn.query("select book_img, book_name, bp.*, bo.* from book_possession bp join books using(isbn) \
+    let result = await conn.query("select book_img, Book_order_line.book_name, bp.*, bo.* from book_possession bp join books using(isbn) \
     join Book_order_line using(isbn) join Book_order bo using(order_id) where bp.customer_id = ? and status = 'Borrowed'",
       [userid])
     

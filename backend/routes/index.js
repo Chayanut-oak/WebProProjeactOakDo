@@ -44,7 +44,7 @@ router.get("/User", isLoggedIn, async function (req, res, next) {
       let cusinfo = await conn.query("SELECT * FROM Customer where customer_id = ?;", [
         cusID.customer_id
       ])
-      let possession = await conn.query('select book_img, book_name, bp.*, bo.* from book_possession bp join books using(isbn) \
+      let possession = await conn.query('select book_img, Book_order_line.book_name, bp.*, bo.* from book_possession bp join books using(isbn) \
       join Book_order_line using(isbn) join Book_order bo using(order_id) where bp.customer_id = ? and status = "Borrowed"', [
         cusID.customer_id
       ])
@@ -268,11 +268,11 @@ router.put('/NewEmail', isLoggedIn, async (req, res, next) => {
   }
 });
 const addSchema = Joi.object({
-  isbn: Joi.required(),
+  isbn: Joi.string().length(13).required(),
   book_name: Joi.string().required(),
   book_desc: Joi.string().required(),
   published_date: Joi.required(),
-  book_stock: Joi.required(),
+  book_stock: Joi.number().min(0).required(),
   alias: Joi.string().optional(),
   author: Joi.string().required(),
   publisher_name: Joi.string().required(),
@@ -399,11 +399,18 @@ router.get("/book", async function (req, res, next) {
 });
 
 router.delete("/bookdel", isLoggedIn, async function (req, res, next) {
-
+  const conn = await pool.getConnection()
+  await conn.beginTransaction();
   try {
-    let delbook = await pool.query(
+    await conn.query('SET FOREIGN_KEY_CHECKS = 0')
+    let delbook = await conn.query(
       "DELETE FROM Books where isbn = ?;", [req.query.isbn]
     )
+    await conn.query('SET FOREIGN_KEY_CHECKS = 1')
+    await conn.query(
+      "update book_order_line set status = 'Returned' where isbn = ?;", [req.query.isbn]
+    )
+    conn.commit()
     res.send("success")
 
   } catch (error) {
@@ -433,6 +440,21 @@ router.get("/product/:id", async function (req, res, next) {
     conn.release();
   }
 });
+const updateSchema = Joi.object({
+  isbn: Joi.string().length(13).required(),
+  book_name: Joi.string().required(),
+  book_desc: Joi.string().required(),
+  published_date: Joi.required(),
+  book_stock: Joi.number().min(0).required(),
+  alias: Joi.string().optional(),
+  author: Joi.string().required(),
+  publisher_name: Joi.string().required(),
+  type: Joi.required(),
+  newbook_img: Joi.optional(),
+  oldisbn: Joi.string().optional(),
+  oldfile: Joi.string().optional(),
+})
+  
 router.put("/update", isLoggedIn, upload.single('newbook_img'), async function (req, res, next) {
   const conn = await pool.getConnection()
   await conn.beginTransaction();
@@ -448,7 +470,13 @@ router.put("/update", isLoggedIn, upload.single('newbook_img'), async function (
   const type = req.body.type;
   const oldisbn = req.body.oldisbn;
   const oldfile = req.body.oldfile;
-  
+
+  try {
+    await updateSchema.validateAsync(req.body, { abortEarly: false })
+  } catch (error) {
+    const errorMessage = error.details.map((detail) => detail.message).join(', ');
+    return res.status(400).json(errorMessage )
+  }
   try {
     if (file) {
       const setimg = await conn.query("UPDATE Books set book_img = ? where isbn = ?", [
@@ -556,8 +584,8 @@ router.get("/history", isLoggedIn, async function (req, res, next) {
 
     console.log(cusID)
     if (results1[0].length != 0) {
-      let possession = await conn.query('select book_name, bo.*, bol.* from  books  \
-      join Book_order_line bol using(isbn) join Book_order bo using(order_id) where bo.customer_id = ?', [
+      let possession = await conn.query('select   bo.*, bol.* from   \
+       Book_order_line bol  join Book_order bo using(order_id) where bo.customer_id = ?', [
         cusID.customer_id
       ])
       return res.json({ possession: possession[0]})

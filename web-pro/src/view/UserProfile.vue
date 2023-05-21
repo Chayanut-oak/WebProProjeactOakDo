@@ -479,7 +479,7 @@ export default {
             formData.append("id", this.cusid);
             formData.append("password", this.pass);
             axios
-                .post("http://localhost:3000/checkpass", formData, {
+                .post("http://localhost:3000/checkP ass", formData, {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -494,6 +494,7 @@ export default {
                         })
                         this.emailinput = true
                         this.checkpass = false
+                        this.pass = ""
                     } else if (response.data.status == 'fail') {
                         swal.fire({
                             icon: 'error',
@@ -568,11 +569,11 @@ export default {
         },
         getHistory() {
             axios
-                .get("http://localhost:3000/history", { params: { token: this.token } })
+                .get("http://localhost:3000/history", { params: { token: this.$store.state.token } })
                 .then((response) => {
-                    {
+                    console.log(response.data)
                         this.book_history = response.data.possession
-                    }
+                    
 
                 })
                 .catch((err) => {

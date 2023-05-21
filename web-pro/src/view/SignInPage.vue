@@ -149,7 +149,11 @@ export default {
 
         })
         .catch((error) => {
-          alert(error.response.data)
+          swal.fire({
+  icon: 'error',
+  title: error.response.data,
+  text: 'Hey, calm down and try to remember it.',
+})
           this.e = ""
           this.pass = ""
         });

@@ -178,6 +178,10 @@ router.post('/checkPass', async function (req, res, next) {
         [password]
       );
         if(results3[0].length != 0){
+          await conn.query(
+            "UPDATE customer set otp = null where otp = ? ;",
+            [password]
+          );
           res.json({'status':"success"})
         }else{
           res.json({'status':"fail"})
@@ -189,6 +193,10 @@ router.post('/checkPass', async function (req, res, next) {
         [password]
       );
         if(results4[0].length != 0){
+          await conn.query(
+            "UPDATE admin set otp = null where otp = ? ;",
+            [password]
+          );
           res.json({'status':"success"})
         }else{
           res.json({'status':"fail"})
@@ -259,14 +267,19 @@ router.put('/NewEmail', isLoggedIn, async (req, res, next) => {
     conn.release();
   }
 });
-
-
-
-
-
-
-
-
+const addSchema = Joi.object({
+  isbn: Joi.required(),
+  book_name: Joi.string().required(),
+  book_desc: Joi.string().required(),
+  published_date: Joi.required(),
+  book_stock: Joi.required(),
+  alias: Joi.string().optional(),
+  author: Joi.string().required(),
+  publisher_name: Joi.string().required(),
+  type: Joi.required(),
+  file: Joi.optional(),
+  
+  })
 
 router.post("/Addbook", isLoggedIn, upload.single('book_img'), async function (req, res, next) {
   const conn = await pool.getConnection()
@@ -281,8 +294,17 @@ router.post("/Addbook", isLoggedIn, upload.single('book_img'), async function (r
   const publisher_name = req.body.publisher_name
   const file = req.file;
   const type = req.body.type;
-  console.log(req.body)
+  if (file.length <= 0){
+    return res.status(400).json("Want File")
+  }
   try {
+    await addSchema.validateAsync(req.body, { abortEarly: false })
+  } catch (error) {
+    const errorMessage = error.details.map((detail) => detail.message).join(', ');
+    return res.status(400).json(errorMessage )
+  }
+  try {
+    
     let oldisbn = await conn.query(
       "SELECT isbn FROM Books where isbn = ?;", [
       isbn])
@@ -314,7 +336,7 @@ router.post("/Addbook", isLoggedIn, upload.single('book_img'), async function (r
       } else {
         pubid = pubid.publisher_id
       }
-      console.log(file.path.substr(6))
+     
       if (file) {
         let newbook = await conn.query(
           "INSERT  INTO Books VALUES(?,?,?,?,?,?,?);",
@@ -375,6 +397,7 @@ router.get("/book", async function (req, res, next) {
     next(error)
   }
 });
+
 router.delete("/bookdel", isLoggedIn, async function (req, res, next) {
 
   try {
@@ -425,7 +448,7 @@ router.put("/update", isLoggedIn, upload.single('newbook_img'), async function (
   const type = req.body.type;
   const oldisbn = req.body.oldisbn;
   const oldfile = req.body.oldfile;
-
+  
   try {
     if (file) {
       const setimg = await conn.query("UPDATE Books set book_img = ? where isbn = ?", [
@@ -504,6 +527,7 @@ router.get("/order", async function (req, res, next) {
     console.log('finally')
   }
 });
+
 router.get("/orderline", isLoggedIn, async function (req, res, next) {
   orderid = req.query.order_id
   try {
@@ -532,11 +556,10 @@ router.get("/history", isLoggedIn, async function (req, res, next) {
 
     console.log(cusID)
     if (results1[0].length != 0) {
-      let possession = await conn.query('select book_name, bo., bol. from  books  \
+      let possession = await conn.query('select book_name, bo.*, bol.* from  books  \
       join Book_order_line bol using(isbn) join Book_order bo using(order_id) where bo.customer_id = ?', [
         cusID.customer_id
       ])
-      console.log(possession[0])
       return res.json({ possession: possession[0]})
 
     }

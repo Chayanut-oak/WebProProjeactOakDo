@@ -305,25 +305,7 @@ router.post('/checkmail', async (req, res, next) => {
 
 
 })
-// // Create new comment
-// router.post('/:blogId/comments', function (req, res, next) {
-//   return
-// });
 
-// // Update comment
-// router.put('/comments/:commentId', function (req, res, next) {
-//   return
-// });
-
-// // Delete comment
-// router.delete('/comments/:commentId', function (req, res, next) {
-//   return
-// });
-
-// // Delete comment
-// router.put('/comments/addlike/:commentId', function (req, res, next) {
-//   return
-// });
 
 const newPassSchema = Joi.object({
   password: Joi.string().required().custom(passwordValidator),
@@ -406,7 +388,7 @@ router.put('/resetPass/:token', async function (req, res, next) {
   }
 
 });
-// Create new comment
+
 router.post('/otp',async function (req, res, next) {
   const conn = await pool.getConnection()
   // Begin transaction
@@ -432,9 +414,6 @@ try {
       "UPDATE admin SET otp = ? WHERE admin_email = ?;",
       [otp, email])
   }
-
-
-  
     var transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {

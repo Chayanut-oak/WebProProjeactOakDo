@@ -19,7 +19,7 @@
                                     ISBN : {{ isbn }}
                                 </div>
                                 <p class="leading-relaxed">{{ book_desc }}</p>
-                                <div class="bottom-0 inset-x-0  m-1 flex">
+                                <div v-if="stock != 0 " class="bottom-0 inset-x-0  m-1 flex">
                                     <button
                                         class="flex ml-auto text-white  border-0 py-2 px-6 focus:outline-none bg-blue-500 hover:bg-blue-700 rounded "
                                         @click="addToCart(  )">Borrow</button>
@@ -92,6 +92,7 @@ export default {
             book_desc: null,
             isbn:null,
             cusimg:null,
+            stock:null
         };
     },
     methods: {
@@ -166,6 +167,7 @@ export default {
                 this.author_name = this.book.author_name
                 this.book_desc = this.book.book_desc
                 this.isbn = this.book.isbn
+                this.stock = this.book.book_stock
                 this.cusimg = this.allcom.customer_img
             })
             .catch((err) => {

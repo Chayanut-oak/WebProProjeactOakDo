@@ -53,7 +53,7 @@
             </button>
             <button v-else 
               class="bg-black text-white font-semibold py-2 px-4 rounded w-full">
-              OUT OF STOCK
+              Not Available
             </button>
           </div>
         </div>

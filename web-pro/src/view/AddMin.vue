@@ -506,7 +506,7 @@ export default {
             file: null,
             author: "None",
             alias: null,
-            publisher_name: null,
+            publisher_name: "None",
             type: "None",
             books: null,
             active: false,
@@ -521,8 +521,6 @@ export default {
             cusModal: false,
             authors: null,
             publisher: "",
-            nonepub: null,
-            noneauthor: null,
         };
     },
     methods: {
@@ -535,7 +533,7 @@ export default {
             this.alias = null
             this.book_desc = null
             this.published_date = null
-            this.publisher_name = null
+            this.publisher_name = "None"
             this.book_stock = null
             this.type = "None"
         },

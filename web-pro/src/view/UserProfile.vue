@@ -184,15 +184,117 @@
                             </div>
                         </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="fixed z-10 inset-0 overflow-y-auto" v-show="history">
+                            <div
+                                class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <!-- Background overlay -->
+                                <div class="fixed inset-0 transition-opacity">
+                                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                                </div>
+
+                                <!-- Modal panel -->
+
+                                <div class="center inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                                    role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+                                    <div class="bg-white px-6 py-8 rounded shadow-md text-black w-full">
+                                        <button @click="history = false" class="float-right m-auto">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="30"
+                                                height="30" id="close">
+                                                <path fill="#F94646"
+                                                    d="M40 3H24C12.4 3 3 12.4 3 24v16c0 11.6 9.4 21 21 21h16c11.6 0 21-9.4 21-21V24c0-11.6-9.4-21-21-21z">
+                                                </path>
+                                                <path fill="#E2E2E2"
+                                                    d="M36.8 32 48 20.8c.6-.6 1-1.5 1-2.4 0-.9-.4-1.8-1-2.4-1.3-1.3-3.5-1.3-4.8 0L32 27.2 20.8 16c-1.3-1.3-3.5-1.3-4.8 0-.6.6-1 1.5-1 2.4 0 .9.4 1.8 1 2.4L27.2 32 16 43.2c-.6.6-1 1.5-1 2.4s.4 1.8 1 2.4c.6.6 1.5 1 2.4 1 .9 0 1.8-.4 2.4-1L32 36.8 43.2 48c1.3 1.3 3.5 1.3 4.8 0 .6-.6 1-1.5 1-2.4 0-.9-.4-1.8-1-2.4L36.8 32z">
+                                                </path>
+                                            </svg>
+
+                                        </button>
+                                        <h1 class="text-4xl text-gray-900 font-bold leading-8 my-1 p-2">History</h1>
+                                        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                                <thead
+                                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">
+                                            Name
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Start Time
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            End Time
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Status
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="item in book_history" :key="item.isbn"
+                                        class="bg-white border-b dark:bg-gray-600 ">
+                                        <td v-if="item.book_name" class="px-6 py-4 text-gray-900">
+                                            {{ item.book_name }}
+                                        </td>
+                                        <td v-if="item.date_of_borrow" class="px-6 py-4 text-gray-900">
+                                            {{ item.date_of_borrow.slice(0, 10) }}
+                                        </td>
+                                        <td v-if="item.end_of_date" class="px-6 py-4 text-gray-900 ">
+                                            {{ item.end_of_date.slice(0, 10) }}
+                                        </td>
+                                        <td v-if="item.status" class="px-6 py-4 text-gray-900">
+                                            <div class="text-green-500" v-if="item.status == 'Borrowed' ">{{ item.status }}</div>
+                                            <div v-else class = "text-red-600">{{ item.status }}</div>
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         <div class="my-4"></div>
 
                         <h1 class="text-4xl text-gray-900 font-bold leading-8 my-1 p-2">Your Book</h1>
+                        <button v-on:click="getHistory()" @click="history = true"
+                            class="text-xl font-medium mx-10 my-1 btn btn-secondary">History</button>
                         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead
                                     class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3">
+                                        <th scope="col" class="px-6 py-3 ">
                                             <span class="sr-only">รูปภาพ</span>
                                         </th>
                                         <th scope="col" class="px-6 py-3">
@@ -210,18 +312,18 @@
                                 <tbody>
                                     <tr v-for="item in book_possess" :key="item.isbn"
                                         class="bg-white border-b dark:bg-gray-300">
-                                        <td v-if="item.book_img" class="px-6 py-4">
+                                        <td v-if="item.book_img" class="px-6 py-4 text-gray-900">
                                             <img class="object-contain h-20 w-30"
                                                 :src="`http://localhost:3000/${item.book_img}`" alt="Placeholder image" />
                                         </td>
-                                        <td v-if="item.book_name" class="px-6 py-4">
+                                        <td v-if="item.book_name" class="px-6 py-4 text-gray-900">
                                             {{ item.book_name }}
                                         </td>
-                                        <td v-if="item.end_of_date" class="px-6 py-4">
+                                        <td v-if="item.end_of_date" class="px-6 py-4 text-gray-900">
                                             {{ item.end_of_date.slice(0, 10) }}
                                         </td>
 
-                                        <td v-if="item.book_name" class="px-6 py-4 text-right">
+                                        <td v-if="item.book_name" class="px-6 py-4 text-right text-gray-900">
                                             <button href="#"
                                                 class="text-xl font-medium mx-10 my-1 btn btn-secondary">Read</button>
                                             <button href="#" class="text-xl font-medium mx-10 my-1 btn btn-secondary"
@@ -283,6 +385,8 @@ export default {
             pass: "",
             checkpass: false,
             emailinput: false,
+            history: false,
+            book_history: null,
         };
     }, methods: {
         logout() {
@@ -383,21 +487,21 @@ export default {
                 .then((response) => {
                     if (response.data.status == 'success') {
                         swal.fire({
-                        icon: 'success',
-                        title: 'You have confirm OTP',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
+                            icon: 'success',
+                            title: 'You have confirm OTP',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
                         this.emailinput = true
                         this.checkpass = false
-                    }else if(response.data.status == 'fail'){
+                    } else if (response.data.status == 'fail') {
                         swal.fire({
-                        icon: 'error',
-                        title: 'Wrong OTP',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    this.pass = ""
+                            icon: 'error',
+                            title: 'Wrong OTP',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        this.pass = ""
                     }
 
                 })
@@ -462,6 +566,19 @@ export default {
 
 
         },
+        getHistory() {
+            axios
+                .get("http://localhost:3000/history", { params: { token: this.token } })
+                .then((response) => {
+                    {
+                        this.book_history = response.data.possession
+                    }
+
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+        }
     },
 
     created() {

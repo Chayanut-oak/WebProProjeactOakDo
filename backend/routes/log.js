@@ -116,21 +116,10 @@ const passwordValidator = (value, helpers) => {
   return value
 }
 
-const emailValidator = async (value, helpers) => {
-  const [rows, _] = await pool.query(
-    "SELECT email FROM customer WHERE email = ?",
-    [value]
-  )
-  if (rows.length > 0) {
 
-    const message = 'This email is already taken' + rows.length
-    throw new Joi.ValidationError(message, { message })
-  }
-  return value
-}
 
 const signupSchema = Joi.object({
-  email: Joi.string().required().email().external(emailValidator),
+  email: Joi.string().required().email(),
   pnum: Joi.string().required().pattern(/0[0-9]{9}/),
   fname: Joi.string().required().max(150),
   lname: Joi.string().required().max(150),

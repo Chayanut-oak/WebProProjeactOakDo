@@ -139,4 +139,37 @@ router.put("/returnBook",isLoggedIn, async function (req, res, next) {
     conn.release();
   }
 });
+
+router.put("/changeStatus",isLoggedIn, async function (req, res, next) {
+  const conn = await pool.getConnection()
+  // Begin transaction
+  await conn.beginTransaction();
+  
+ console.log( req.body)
+
+
+ try {
+  let changeStatus = await conn.query("update Book_order_line set status = 'Returned' where order_line_id = ?",[
+    req.body.item.order_line_id
+  ]);
+  let cusid = await conn.query("SELECT customer_id FROM book_order where order_id = ?",[
+    req.body.item.order_id
+  ]);
+  let delbook = await conn.query("DELETE FROM book_possession where customer_id = ? and isbn = ?",[
+    cusid[0][0].customer_id,req.body.item.isbn
+  ]);
+  let orderline = await conn.query("SELECT * FROM book_order_line WHERE order_id = ?",[
+    req.body.item.order_id
+  ]);
+  conn.commit()
+  res.json({orderline: orderline[0][0]})
+} catch (error) {
+  await conn.rollback();
+  next(error);
+} finally {
+  console.log('finally')
+  conn.release();
+}
+});
+
 exports.router = router;

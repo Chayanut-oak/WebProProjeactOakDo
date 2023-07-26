@@ -124,7 +124,7 @@
                                                 class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-center">
                                                 {{ item.status }}</td>
 
-                                                <button @click="changeStatus(item)" class="my-3  hover:bg-orange-500 p-1 rounded-md"> <svg
+                                                <button v-if="item.status == 'Borrowed'" @click="changeStatus(item)" class="my-3  hover:bg-orange-500 p-1 rounded-md"> <svg
                                             xmlns="http://www.w3.org/2000/svg" width="20" height="28" id="remove">
                                             <path fill="#000100"
                                                 d="m12.695 10 6.752-6.752a1.887 1.887 0 0 0 0-2.668L19.42.553a1.887 1.887 0 0 0-2.668 0L10 7.305 3.248.553a1.887 1.887 0 0 0-2.668 0L.553.58a1.887 1.887 0 0 0 0 2.668L7.305 10 .553 16.752a1.887 1.887 0 0 0 0 2.668l.027.027a1.887 1.887 0 0 0 2.668 0L10 12.695l6.752 6.752a1.887 1.887 0 0 0 2.668 0l.027-.027a1.887 1.887 0 0 0 0-2.668L12.695 10z">
@@ -514,7 +514,7 @@ export default {
             book_stock: null,
             file: null,
             author: "None",
-            alias: null,
+            alias: "",
             publisher_name: "None",
             type: "None",
             books: null,
@@ -532,7 +532,21 @@ export default {
             publisher: "",
         };
     },
-    methods: {
+    methods: {changeStatus(item){
+        axios
+                .put("http://localhost:3000/changeStatus",  {item}  , {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                .then((response) => {
+                    console.log(response)
+                    location.reload();
+                })
+                .catch((error) => {
+                    alert(error.response.data)
+                });
+    },
         validateForm() {
             let errors = []
             if (!this.isbn || this.isbn.length != 13) {
@@ -576,7 +590,7 @@ export default {
             this.isbn = null
             this.book_name = null
             this.author = "None"
-            this.alias = null
+            this.alias = ""
             this.book_desc = null
             this.published_date = null
             this.publisher_name = "None"
@@ -629,7 +643,7 @@ export default {
         },
         validateBookImg() {
 
-            if (this.file.length < 0) {
+            if (!this.file) {
                 return 'This field is required';
             }
 

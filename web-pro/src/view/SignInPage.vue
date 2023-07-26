@@ -83,80 +83,89 @@ export default {
       pass: "",
       id: "",
       changeEmailModal: false,
-      email:null
+      email: null
     }
   }, methods: {
-    checkEmail(){
-    var formData = new FormData();
-            formData.append("email", this.email);
-            axios
-                .post("http://localhost:3000/checkmail", formData, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
-                .then((response) => {
-                    console.log(response.data)
-                    this.changeEmailModal = false
-                })
-                .catch((error) => {
-                    alert(error.response.data)
-                });
-  },
-    submit() {
+    checkEmail() {
       var formData = new FormData();
-      formData.append("email", this.e);
-      formData.append("password", this.pass);
+      formData.append("email", this.email);
       axios
-        .post("/SignIn", formData, {
+        .post("http://localhost:3000/checkmail", formData, {
           headers: {
             "Content-Type": "application/json",
           },
         })
         .then((response) => {
-          if (response.data.message == "Addmin") {
-            swal.fire({
-              title: 'You login as an Admin!',
-              text: 'success',
-              icon: 'success'
-            }).then((next) => {
-              if (next) {
-                this.id = response.data.result[0].admin_id
-                this.$store.commit('login2', this.id)
-                this.$store.commit('token', response.data.token)
-                this.$emit('auth-change')
-                this.$router.push({ path: "/" });
-              }
-            })
-          } else {
-            swal.fire({
-              title: 'Login Successful',
-              text: '',
-              icon: 'success'
-            }).then((next) => {
-              if (next) {
-                this.id = response.data.result[0].customer_id
-                this.$store.commit('login2', this.id)
-                this.$store.commit('token', response.data.token)
-                this.$emit('auth-change')
-                this.$router.push({ path: "/" });
-
-              }
-            })
-          }
-          // Success! -> redirect to home page
-          console.log(response)
-
+          console.log(response.data)
+          this.changeEmailModal = false
         })
         .catch((error) => {
-          swal.fire({
-  icon: 'error',
-  title: error.response.data,
-  text: 'Hey, calm down and try to remember it.',
-})
-          this.e = ""
-          this.pass = ""
+          alert(error.response.data)
         });
+    },
+    submit() {
+      if (this.e && this.pass) {
+        var formData = new FormData();
+        formData.append("email", this.e);
+        formData.append("password", this.pass);
+        axios
+          .post("/SignIn", formData, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            if (response.data.message == "Addmin") {
+              swal.fire({
+                title: 'You login as an Admin!',
+                text: 'success',
+                icon: 'success'
+              }).then((next) => {
+                if (next) {
+                  this.id = response.data.result[0].admin_id
+                  this.$store.commit('login2', this.id)
+                  this.$store.commit('token', response.data.token)
+                  this.$emit('auth-change')
+                  this.$router.push({ path: "/" });
+                }
+              })
+            } else {
+              swal.fire({
+                title: 'Login Successful',
+                text: '',
+                icon: 'success'
+              }).then((next) => {
+                if (next) {
+                  this.id = response.data.result[0].customer_id
+                  this.$store.commit('login2', this.id)
+                  this.$store.commit('token', response.data.token)
+                  this.$emit('auth-change')
+                  this.$router.push({ path: "/" });
+
+                }
+              })
+            }
+            // Success! -> redirect to home page
+            console.log(response)
+
+          })
+          .catch((error) => {
+            swal.fire({
+              icon: 'error',
+              title: error.response.data,
+              text: 'Hey, calm down and try to remember it.',
+            })
+            this.e = ""
+            this.pass = ""
+          });
+      } else {
+        swal.fire({
+          icon: 'error',
+          title: 'Did you not fill out the form ?',
+          
+        })
+      }
+
     },
 
   }, mounted() {

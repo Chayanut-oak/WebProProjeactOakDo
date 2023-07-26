@@ -465,7 +465,7 @@ export default {
             formData.append("id", this.cusid);
             formData.append("password", this.pass);
             axios
-                .post("http://localhost:3000/checkP ass", formData, {
+                .post("http://localhost:3000/checkPass", formData, {
                     headers: {
                         "Content-Type": "application/json",
                     },

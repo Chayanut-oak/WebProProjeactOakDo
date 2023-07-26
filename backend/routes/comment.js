@@ -3,6 +3,7 @@ const path = require("path");
 const pool = require("../config");
 const router = express.Router();
 const fs = require('fs');
+const { isLoggedIn } = require('../middlewares/index.js')
 // Require multer for file upload
 const multer = require('multer')
 // SET STORAGE
@@ -21,7 +22,7 @@ const upload = multer({ storage: storage })
 
 
 // Create new comment
-router.post('/:id/comments', async function(req, res, next){
+router.post('/:id/comments',isLoggedIn, async function(req, res, next){
     const conn = await pool.getConnection()
     // Begin transaction
     await conn.beginTransaction();
